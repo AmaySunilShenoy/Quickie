@@ -1,0 +1,235 @@
+{% extends "baseuser.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='profile.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+<!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=console.debug&libraries=maps,marker&v=beta"> -->
+</script>
+
+<script>
+    let map, directionsService, directionsRenderer;
+
+    function initProjectedRide() {
+        // Initialize the map
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13
+        });
+
+        // Initialize the Directions service and renderer
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+
+        // Call the function to display the route
+        calculateAndDisplayRoute();
+    }
+
+    function calculateAndDisplayRoute() {
+        // Define the start and end points
+        const start = 'Place du Chatelet, Paris, France';
+        const end = 'Kremlin Bicêtre, France';
+
+        // Request directions from the Directions service
+        directionsService.route(
+            {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING'
+            },
+            (response, status) => {
+                if (status === 'OK') {
+                    // Display the route on the map
+                    directionsRenderer.setDirections(response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            }
+        );
+    }
+</script>
+
+
+{% endblock %}
+
+{% block title %} Quickie | Home {% endblock %}
+
+{% block content %}
+<div class="main">
+
+    <section class="left-panel">
+        <div class="items-list">
+            <div class="item trips active" onclick="window.location.href = '/profile/trips'">
+                <div class="text">
+                    My Trips
+                </div>
+            </div>
+            <div class="item wallet" onclick="window.location.href = '/profile/wallet'">
+                <div class="text">
+                    Wallet
+                </div>
+            </div>
+            <div class="item settings" onclick="window.location.href = '/profile/settings'">
+                <div class="text">
+                    Settings
+                </div>
+            </div>
+            <div class="item" onclick="window.location.href = '/logout'">
+                <div class="text">
+                    Logout
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="information">
+        {% if section == 'trips' %}
+
+        <div class="trips">
+        {% if not user_rides %}
+            <div class="trip-card">
+                <div class="trip-image">
+                    <img src="https://d3i4yxtzktqr9n.cloudfront.net/riders-web-v2/e84afe639621301e.svg" alt="ride" />
+                </div>
+                <div class="trip-information">
+                    You have not taken any rides yet. Book one now!
+                </div>
+            </div>
+
+        {% else %}
+            {% for ride in user_rides %}
+            <div class="trip-card">
+                <div class="trip-image">
+                    <img src="https://d3i4yxtzktqr9n.cloudfront.net/riders-web-v2/e84afe639621301e.svg" alt="ride" />
+                </div>
+                <div class="trip-information">
+                    <div class="trip-timings">
+                        <div class="trip-date">
+                            {{ride.updated_at[:10]}}
+                        </div>
+                        <div class="trip-time">
+                            {{ride.updated_at[11:16]}}
+                        </div>
+                    </div>
+                    <div class="trip-from-to-map">
+                        <div class="trip-from-to">
+                            <div class="trip-from">
+                                <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                data-baseweb="icon">
+                                <title>From</title>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                               {{ride.from_location}}
+                            </div>
+                            <div class="connector"></div>
+                            <div class="trip-to">
+                                <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                data-baseweb="icon">
+                                <title>To</title>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                                {{ride.to_location}}
+                            </div>
+                        </div>
+                        <div class="trip-map" id="map">
+
+                        </div>
+                    </div>
+                    <div class="trip-price">
+                        {{ride.price}}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        </div>
+        {% elif section == 'wallet' %}
+        <div class="wallet">
+            <!-- <div class="wallet-cash">
+                <div class="main-heading">
+                    Cash
+                </div>
+                <div class="wallet-card">
+                    <div class="heading">
+                        Quickie Cash
+                    </div>
+                    <div class="amount">
+                        €12.89
+                    </div>
+                </div>
+            </div> -->
+            <div class="main-heading">
+                Payment Methods
+            </div>
+            <div class="wallet-cards">
+                <div class="wallet-card">
+                    <div class="heading">
+                        Visa
+                        <img src="https://d3i4yxtzktqr9n.cloudfront.net/web-money/c57afa92c9773650.svg"/>
+                    </div>
+                    <div class="card-details">
+                        **** **** **** {{user_payment.card_number[12:16]}}
+                    </div>
+                </div>
+                <div class="add-card">
+                    <div class="add">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="settings">
+            <div class="main-heading">
+                Profile Settings
+            </div>
+
+            <div class="user-info">
+                <div class="user-names">
+                    <div class="user-firstname">
+                        <div class="label">Firstname</div>
+                        <input type="text" value="{{user.firstname}}" readonly />
+                    </div>
+                    <div class="user-lastname">
+                        <div class="label">Lastname</div>
+                        <input type="text" value="{{user.lastname}}" readonly />
+                    </div>
+                </div>
+                <div class="user-other">
+                    <div class="user-email">
+                        <div class="label">Email</div>
+                            <input type="text" value="{{user.email[0] +  '**********' + '@gmail.com'}}" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+</div>
+</section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const section = document.querySelector(`.{{section}}`)
+        const trips = document.querySelector('.trips')
+        const wallet = document.querySelector('.wallet')
+        const settings = document.querySelector('.settings')
+
+        console.log('removing classLists')
+
+        trips.classList.remove('active');
+        wallet.classList.remove('active');
+        settings.classList.remove('active');
+        section.classList.add('active');
+    });
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=initProjectedRide"></script>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='base.css') }}">
+    {% block head %}{% endblock %}
+    <link
+    href="https://fonts.googleapis.com/css2?family=Gabarito:wght@700&family=Inclusive+Sans&family=Onest&family=Oswald:wght@700&family=Young+Serif&family=Blinker&family=Kdam+Thmor+Pro&family=Cabin:wght@700&family=Dosis:wght@500&family=Montserrat:wght@300&family=Nova+Square&family=Rubik:wght@400;500&display=swap"
+    rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="/home">Quickie</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li>
+        <div class="profile">
+          <div class="profile-picture">
+            {{user.firstname[0].upper() + user.lastname[0].upper()}} 
+          </div>
+        <div class="sub-menu-wrap">
+          <div class="sub-menu">
+            <div class="items">
+              <div class="item" onclick="window.location.href = '/profile/trips'">
+                <div class="icon">
+                  <i class="fa-solid fa-memory"></i>
+                </div>
+                <div class="text" >
+                  Trips
+                </div>
+              </div>
+              <div class="item" onclick="window.location.href = '/profile/wallet'">
+                <div class="icon">
+                  <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="text">
+                  Wallet
+                </div>
+              </div>
+              <div class="item" onclick="window.location.href = '/profile/settings'">
+                <div class="icon">
+                  <i class="fa-solid fa-gear"></i>
+                </div>
+                <div class="text">
+                  Settings
+                </div>
+              </div>
+              <div class="item" onclick="window.location.href = '/logout'">
+                <div class="icon">
+                  <i class="fa-solid fa-sign-out"></i>
+                </div>
+                <div class="text">
+                  Logout
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  <li>
+    <div class="drop-down" onclick="toggleSideMenu()">
+      <i class="drop-down-icon fa-solid fa-caret-down"></i>
+    </div>
+  </li>
+</ul>
+  </nav>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+<script>
+  function toggleSideMenu(){
+    console.log('clicked')
+    const subMenu = document.querySelector(".sub-menu-wrap");
+    const i = document.querySelector(".drop-down-icon");
+    subMenu.classList.toggle("active");
+    i.classList.toggle("fa-caret-up");
+    i.classList.toggle("fa-caret-down");
+  }
+</script>
+  {% block js%}
+  {% endblock %}
+</html>

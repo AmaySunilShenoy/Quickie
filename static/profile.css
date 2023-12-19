@@ -1,0 +1,342 @@
+html, body{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.main{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px;
+}
+
+.left-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px;
+    flex: 1;
+
+
+    .items-list{
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+
+
+        .item{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            
+            &:hover{
+                background-color: #f6f3f3;
+                cursor: pointer;
+            }
+        }
+
+
+
+        .active{
+            background-color: #e9e7e7 !important;
+            border-left: 4px solid black !important;
+        }
+    }
+}
+
+.information{
+    display: flex;
+    flex-direction: column;
+    flex:2;
+    height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    
+/* Trip Section */
+
+    .trips{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Onest';
+        font-size: 20px;
+        width: 100%;
+        height: 100vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    
+
+    .trip-card{
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-family: 'Onest';
+        width: 100%;
+        min-height: fit-content;
+        font-size: 15px;
+        width: 90%;
+        margin: 15px 0;
+    }
+
+    .trip-image{
+        width: 100%;
+        height: 100px;
+        border-radius: 10px;
+        background-color: #ccc;
+
+        & img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    }
+
+    .trip-information{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Gabarito';
+        font-size: 20px;
+
+        .trip-timings{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 15px;
+        }
+
+        .trip-from-to-map{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 15px;
+
+        .trip-from-to{
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            width: 50%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 17px;
+
+
+            .connector{
+                position: absolute;
+                border-left: 1px solid;
+                height: 15px;
+                z-index: 1;
+                top: 40%;
+                left: 20px;
+            }
+
+        }
+
+        .trip-map{
+            height: 250px;
+            width: 250px;
+        }
+    }
+
+        .trip-price{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Rubik';
+            font-size: 20px;
+            font-weight: 5s00;
+        }
+    }
+}
+
+/* Wallet Section */
+.wallet{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    padding: 10px;
+
+    .wallet-card{
+        display: flex;
+        flex-direction: column;
+        height: 250px;
+        width: 375px;
+        border-radius: 10px;
+        background-color: rgb(3, 3, 75);
+        color: white;
+        padding: 35px;
+        margin: 10px;
+    }
+
+    .wallet-cash{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        .main-heading{
+            font-size: 30px;
+            font-family: 'Gabarito';
+        }
+
+
+        .wallet-card{
+            background: linear-gradient(0deg, rgb(246, 246, 246), rgba(255, 255, 255, 0.5)), linear-gradient(315deg, rgb(255, 255, 255) 0%, rgb(203, 203, 203) 50%, rgb(238, 238, 238) 50%, rgb(246, 246, 246) 100%);
+            color: black;
+            margin: 35px auto;
+
+
+            .heading{
+                font-family: 'Gabarito';
+                color: #727272;
+                font-size: 15px;
+            }
+
+            .amount{
+                font-family: 'Rubik';
+                font-weight: 500;
+                font-size: 25px;
+                margin: 10px
+            }
+        }
+    }
+    .main-heading{
+        font-size: 30px;
+        font-family: 'Gabarito';
+    }
+
+    .wallet-cards{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+
+        .wallet-card{
+            margin: 35px auto;
+
+            .heading{
+                display: flex;
+                justify-content: space-between;
+                font-family: 'Onest';
+                font-size: 15px;
+
+                & img{
+                    height: 40px;
+                    width: auto;
+                }
+            }
+
+            .card-details{
+                font-family: 'Rubik';
+                font-weight: 500;
+                font-size: 20px;
+            }
+        }
+
+        .add-card{
+            height: 100px;
+            width: 100px;
+            background-color: #ebeaea;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            clip-path: circle(50%);
+            color: black;
+
+            &:hover{
+                background-color: #dcdcdc;
+            }
+
+        }
+
+    }
+
+}
+
+/* Settings Section */
+
+.settings{
+    margin: 10px;
+    padding: 10px;
+
+    .main-heading{
+        font-size: 30px;
+        font-family: 'Gabarito';
+    }
+
+    .user-names{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .user-info{
+        margin-top: 50px;
+        .label{
+            font-size: 15px;
+            font-family: 'Montserrat';
+        }
+
+        & input[type="text"] {
+            height: 40px;
+            width: fit-content;
+            margin: 15px 0;
+            text-align: center;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            &:focus {
+                border: none;
+                outline: none;
+            }
+        }
+
+        .user-other{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
+
+
+}

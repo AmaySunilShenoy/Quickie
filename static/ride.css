@@ -1,0 +1,641 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 100vh;
+}
+
+body {
+    overflow: hidden;
+}
+
+
+
+.left-panel {
+    flex: 1;
+    transition: all 0.6s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+
+    /* For driver page */
+    .driver-info{
+        height: fit-content;
+        width: 550px;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #ccc;
+        background-color: #fff;
+        color: #000;
+        text-align: center;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.6s ease-in-out;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    
+        .driver-image{
+            & img{
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+    }
+
+    .driver-content{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 95vh;
+    }
+
+    .driver-request-card, .driver-info, .driver-info-customer{
+        height: 0px;
+        opacity: 0;
+        height: 250px;
+        width: 550px;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #ccc;
+        background-color: #fff;
+        color: #000;
+        font-size: 1.2em;
+        transition: all 0.6s ease-in-out;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        align-items: center;
+
+        .chatButton{
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            padding: 5px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+            font-size: 15px;
+        }
+
+        .backButton{
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border: none;
+            padding: 5px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+            font-size: 15px;
+        }
+
+        .chat-heading{
+            font-size: 20px;
+            font-family: 'Onest';
+        }
+
+    
+        .chat{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 97%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 15px;
+    
+            .chat-messages{
+                display: flex;
+                flex-direction: column;
+                border-radius: 10px;
+                width: 100%;
+                height: 70vh;
+                margin: 10px;
+                padding: 10px;
+                font-family: 'Onest';
+                font-size: 15px;
+                background-color: #ededed;
+                overflow-y: scroll;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+
+                .message{
+                    border-radius: 20px;
+                    padding: 10px;
+                    margin: 10px;
+                    font-family: 'Onest';
+                    font-size: 15px;
+                    width: fit-content;
+                }
+
+                .received{
+                    background-color: black;
+                    color: white;
+                    align-self: flex-start;
+
+                }
+
+                .sent{
+                    background-color: white;
+                    color: black;
+                    align-self: flex-end;
+                }
+            }
+        }
+    
+        .chat-input{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 15px;
+
+            .send-message{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+
+            .messageInput {
+                height: 40px;
+                width: 400px;
+                margin: 15px 0;
+                padding: 25px;
+                border-radius: 10px;
+                background-color: rgb(237, 234, 234);
+                border: none;
+                font-family: 'Onest';
+    
+                &:focus {
+                    border: 2px solid black;
+                    outline: none;
+                }
+            }
+
+            .sendButton{
+                height: 40px;
+                margin-left: 10px;
+                border: none;
+                padding: 2px 20px;
+                border-radius: 10px;
+                background-color: black;
+                color: white;
+                font-family: 'Onest';
+            }
+        }
+        }
+    
+
+        .heading{
+            font-size: 20px;
+            font-family: 'Onest';
+        }
+
+        .accept-reject{
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 60%;
+
+            .accept, .reject{
+                margin-top: 10px;
+                margin-left: 10px;
+                border: none;
+                padding: 2px 20px;
+                border-radius: 10px;
+                background-color: black;
+                color: white;
+                font-family: 'Onest';
+            }
+
+            .accept:hover{
+                scale: 1.02;
+                background-color: green;
+            }
+
+            .reject:hover{
+                scale: 1.02;
+                background-color: red;
+            }
+
+        }
+
+        .ride-details{
+            .heading{
+                font-size: 20px;
+                font-family: 'Onest';
+            }
+        }
+
+        .ride-from-to-other{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 15px;
+
+        .ride-from-to{
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            width: 50%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 17px;
+
+
+            .connector{
+                position: absolute;
+                border-left: 1px solid;
+                height: 15px;
+                z-index: 1;
+                top: 40%;
+                left: 20px;
+            }
+
+        }
+    }
+}
+
+.driver-info-customer{
+    height: 100vh !important;
+    justify-content: space-around !important;
+}
+
+
+.driver-info{
+    opacity: 1;
+    height: fit-content;
+
+    .ride-otp{
+        display:flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-around;
+
+        .heading{
+            font-size: 20px;
+            font-family: 'Onest';
+        }
+    }
+
+    .cancel-ride {
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+
+    & input[type="submit"] {
+        border: none;
+        padding: 2px 20px;
+        border-radius: 10px;
+        background-color: black;
+        color: white;
+        font-family: 'Onest';
+
+        &:hover {
+            scale: 1.02;
+            background-color: red;
+        }
+    }
+
+    .otp-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 40%;
+        margin: 10px;
+        
+        .numbers{
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+
+        & input[type="text"] {
+            height: 40px;
+            width: 40px;
+            margin: 15px 0;
+            padding: 5px;
+            text-align: center;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            &:focus {
+                border: 2px solid black;
+                outline: none;
+            }
+        }
+    }
+    & input[type="submit"] {
+        width: 200px;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color: black;
+        color: white;
+        font-family: 'Onest';
+
+
+        &:hover {
+            scale: 1.02;
+        }
+    }
+    }
+}
+
+    .ride-card {
+        height: 400px;
+        width: 500px;
+        margin: 0 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #ccc;
+        background-color: #fff;
+        color: #000;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.6s ease-in-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        scale: 0.9;
+
+        .from-to {
+            position: relative;
+
+            .logo {
+                .quickie-logo {
+                    font-size: larger;
+                    font-weight: bold;
+                    font-family: 'Dosis';
+                }
+            }
+
+
+            .from,
+            .to {
+                position: relative;
+                width: fit-content;
+                height: fit-content;
+            }
+
+            .left-icon {
+                position: absolute;
+                left: 3%;
+                top: 35%;
+            }
+
+            .right-icon {
+                position: absolute;
+                right: 5%;
+                top: 50%;
+
+                &:hover {
+                    scale: 1.05;
+                }
+            }
+
+            .connector {
+                position: absolute;
+                border-left: 1px solid;
+                height: 50px;
+                z-index: 1;
+                top: 38%;
+                left: 5%
+            }
+
+            & input[type="text"] {
+                height: 20px;
+                width: 400px;
+                margin: 10px;
+                padding: 25px;
+                border-radius: 10px;
+                background-color: rgb(237, 234, 234);
+                border: none;
+                font-family: 'Onest';
+
+                &:focus {
+                    border: 2px solid black;
+                    outline: none;
+                    background-color: white;
+                }
+            }
+
+            .cancel-ride {
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+
+            & input[type="submit"] {
+                border: none;
+                padding: 2px 20px;
+                border-radius: 10px;
+                background-color: black;
+                color: white;
+                font-family: 'Onest';
+
+                &:hover {
+                    scale: 1.02;
+                    background-color: red;
+                }
+            }
+        }
+    }
+
+    .request-ride {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        position: sticky;
+        bottom: 10px;
+        left: 10%;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0 0 5px #000000;
+        font-family: 'Onest';
+        cursor: pointer;
+        width: 80%;
+        height: 65px;
+
+        .request-ride-text {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+            font-family: 'Onest';
+            margin: 10px;
+            padding: 10px;
+            background-color: black;
+            color: white;
+            border-radius: 10px;
+            width: 30%;
+            height: 80%;
+            display: flex;
+        }
+    }
+
+    .chosen-car{
+
+    .car-card{
+        display: flex;
+        flex-direction: row;
+        height: 130px;
+        width: 550px;
+        margin: 10px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        color: #000;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        cursor: pointer;
+        /* transition: all 0.6s ease-in-out; */
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 1;
+
+        .car-image{
+            margin: 10px 0;
+            height: 184px;
+            width: 184px;
+            img{
+                object-fit: cover;
+                padding: 10px;
+                width:100%;
+                height:100%;
+
+            }
+        }
+
+        &:hover{
+            border: 2px solid black;
+        }
+
+        .car-details{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+
+            .car-name-capacity{
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                margin: 5px;
+
+                .car-name{
+                    font-size: 30px;
+                    font-family: 'Gabarito';
+                }
+
+                .car-capacity{
+                    font-size: 15px;
+                    margin: 5px;
+                    margin-left: 10px;
+                    font-family: 'Gabarito';
+                }
+            }
+
+            .car-desc{
+                margin: 5px;
+                width: 200px;
+                font-size: 15px;
+                font-family: 'Montserrat', sans-serif;
+            }
+
+
+        }
+        .car-price{
+            font-size: 1.5em;
+            font-family: 'Onest';
+        }
+    }
+}
+}
+
+.map-section{
+    text-align: center;
+
+    .heading{
+        font-size: 30px;
+        font-family: 'Onest';
+    }
+    .map{
+        height: 90vh;
+        width: 800px;
+        margin-top: 15px;
+}
+
+}
+
+.status{
+    position: absolute;
+    top: 50%;
+    left: 54%;
+    
+    .status-text{
+        font-size: 25px;
+        font-family: 'Onest';
+    }
+}
+
+@keyframes highlightAnimation {
+    0% {
+        border: 1px solid #ccc;
+      border-top: 2px solid #3498db;
+    }
+    33% {
+        border: 1px solid #ccc;
+      border-right: 2px solid #3498db;
+    }
+    66% {
+        border: 1px solid #ccc;
+      border-bottom: 2px solid #3498db;
+    }
+    100% {
+        border: 1px solid #ccc;
+        border-left: 2px solid #3498db;
+    }
+  }
+

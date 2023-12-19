@@ -1,0 +1,247 @@
+body {
+    overflow-y: hidden;
+    z-index: 0;
+}
+
+.connection {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    z-index: -1;
+
+    .header {
+        font-size: 40px;
+        font-weight: bold;
+        font-family: 'Gabarito';
+        transition: all 0.5s ease-in-out;
+        
+        .create-header,.login-header, .or-header {
+            display: inline-block; 
+        }
+    }
+
+    .main-content{
+        transition: all 0.4s ease-in-out;
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+
+        & input[type="text"], & input[type="email"] {
+            height: 40px;
+            width: 400px;
+            margin: 15px 0;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            &:focus {
+                border: 2px solid black;
+                outline: none;
+            }
+        }
+
+        & #password {
+            height: 0px;
+            width: 400px;
+            margin: 15px 0;
+            padding: 0px;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+            transition: all 0.3s ease-in-out;
+
+            &:focus {
+                border: 2px solid black;
+                outline: none;
+            }
+        }
+
+        & input[type="submit"] {
+            width: 400px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+
+
+            &:hover {
+                scale: 1.02;
+            }
+        }
+    }
+
+    .or {
+        height: 20px;
+        display: flex;
+        margin: 10px;
+        align-items: center;
+        transition: all 0.3s ease-in-out;
+
+        .text {
+            margin: 0 2px;
+            font-family: 'Onest';
+        }
+
+        .horizontal-line {
+            border-bottom: 2px solid;
+            width: 185px;
+        }
+    }
+
+    .other-options {
+        transition: all 0.3s ease-in-out;
+
+        .google-login,
+        .facebook-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            width: 350px;
+            margin: 10px 10px;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            .text {
+                display: inline;
+            }
+
+            .logo {
+                display: inline;
+                margin: 0 5px;
+                justify-self: start;
+
+                & img {
+                    height: 40px;
+                    width: 40px;
+                }
+            }
+        }
+    }
+
+    .tos {
+        margin-top: 100px;
+        width: 300px;
+        font-size: small;
+        color: rgb(158, 158, 158);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .signup{
+        opacity: 0;
+        transition: all 0.5s ease-in-out;
+        .roles{
+            width: 50%;
+            display: flex;
+            justify-content: space-around;
+            .rider, .driver{
+                height: 50px;
+                width: 200px;
+                text-align: center;
+                padding: 10px;
+                margin: 10px;
+                border-radius: 10px;
+                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+                background-color: black;
+                color: white;
+    
+                & span{
+                    font-family: 'Gabarito';
+                    font-size: 20px;
+                }
+            }
+        }
+    }
+}
+
+@keyframes moveLeftFade {
+
+    0%{
+        transform: translateX(0%);
+        opacity: 100%;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0%;
+    }
+}
+
+@keyframes moveRight {
+
+    0%{
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+@keyframes moveRightFade {
+
+    0%{
+        transform: translateX(0%);
+        opacity: 100%;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0%;
+    }
+}
+
+@keyframes jumpAndLeft {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%{
+        transform: translateY(-20%);
+    }
+
+    20% {
+        transform: translateX(20%);
+        transform: translateY(0%);
+    }
+
+    50%{
+        transform: translateX(15%);
+    }
+
+    100% {
+        transform: translateX(-200%);
+    }
+}
+
+@keyframes jumpAndRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%{
+        transform: translateY(20%);
+    }
+
+    20% {
+        transform: translateX(-20%);
+        transform: translateY(0%);
+    }
+
+    50%{
+        transform: translateX(-15%);
+    }
+
+    100% {
+        transform: translateX(18%);
+    }
+}

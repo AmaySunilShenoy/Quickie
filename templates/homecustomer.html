@@ -1,0 +1,377 @@
+{% extends "baseuser.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+
+<!-- Google maps autocompletion  -->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans+Text:500&amp;lang=en">
+<script>
+    "use strict";
+
+    const CONFIGURATION = {
+        "ctaTitle": "Checkout",
+        "mapOptions": { "center": { "lat": 37.4221, "lng": -122.0841 }, "fullscreenControl": true, "mapTypeControl": false, "streetViewControl": true, "zoom": 11, "zoomControl": true, "maxZoom": 22, "mapId": "" },
+        "mapsApiKey": "AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ",
+        "capabilities": { "addressAutocompleteControl": true, "mapDisplayControl": false, "ctaControl": true }
+    };
+
+    const SHORT_NAME_ADDRESS_COMPONENT_TYPES =
+        new Set(['street_number', 'administrative_area_level_1', 'postal_code']);
+
+    const ADDRESS_COMPONENT_TYPES_IN_FORM = [
+        'from',
+        'to'
+    ];
+
+    function getFormInputElement(componentType) {
+        return document.getElementById(`${componentType}-input`);
+    }
+
+    function fillInAddress(place, componentType) {
+        function getComponentName(componentType) {
+            for (const component of place.address_components || []) {
+                if (component.types[0] === componentType) {
+                    return SHORT_NAME_ADDRESS_COMPONENT_TYPES.has(componentType) ?
+                        component.short_name :
+                        component.long_name;
+                }
+            }
+            return '';
+        }
+
+        function getComponentText(componentType) {
+            if (componentType === 'from' || componentType === 'to') {
+                const streetNumber = getComponentName('street_number');
+                const route = getComponentName('route');
+                const locality = getComponentName('locality');
+                const administrativeArea = getComponentName('administrative_area_level_1');
+                const postalCode = getComponentName('postal_code');
+                const country = getComponentName('country');
+
+                const addressComponents = [streetNumber, route, locality, administrativeArea, postalCode, country];
+                return addressComponents.filter(Boolean).join(', ');
+            } else {
+                return getComponentName(componentType);
+            }
+        }
+        getFormInputElement(componentType).value = getComponentText(componentType);
+    }
+
+    async function fromAutocomplete() {
+        const { Autocomplete } = google.maps.places;
+
+        const autocomplete = new Autocomplete(getFormInputElement('from'), {
+            fields: ['address_components', 'geometry', 'name'],
+            types: ['address'],
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert(`No details available for input: '${place.name}'`);
+                return;
+            }
+            fillInAddress(place, 'from');
+        });
+    }
+
+    async function toAutocomplete() {
+        const { Autocomplete } = google.maps.places;
+
+        const autocomplete = new Autocomplete(getFormInputElement('to'), {
+            fields: ['address_components', 'geometry', 'name'],
+            types: ['address'],
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert(`No details available for input: '${place.name}'`);
+                return;
+            }
+            fillInAddress(place, 'to');
+        });
+    }
+
+    async function initMap() {
+        await fromAutocomplete();
+        await toAutocomplete();
+    }
+
+</script>
+<script>
+
+    function getGeoLocation(address) {
+        const geocoder = new google.maps.Geocoder();
+
+        return new Promise((resolve, reject) => {
+            geocoder.geocode({ 'address': address }, (results, status) => {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    const latitude = results[0].geometry.location.lat();
+                    const longitude = results[0].geometry.location.lng();
+                    console.log(latitude, longitude);
+                    resolve([latitude, longitude]);
+                } else {
+                    reject(new Error(`Geocode was not successful for the following reason: ${status}`));
+                }
+            });
+        });
+    }
+
+</script>
+{% endblock %}
+
+{% block title %} Quickie | Home {% endblock %}
+
+{% block content %}
+<div class="main">
+    <section class="step-1">
+        <div class="header">
+            <div class="header-text">
+                Where you heading?
+            </div>
+        </div>
+        <div class="ride-card">
+            <form onsubmit="event.preventDefault(); handleStep1Submit()">
+                <div class="from-to">
+                    <div class="logo">
+                        <p class="quickie-logo">Quickie {{price}}</p>
+                    </div>
+                    <div class="from">
+                        <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            data-baseweb="icon">
+                            <title>From</title>
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <input type="text" name="from-location" placeholder="Enter location" id="from-input" />
+                        <i class="fa-solid fa-location-arrow fa-xl right-icon" title="Current Location" onclick="getUserCurrentLocation()"></i>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="to">
+                        <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            data-baseweb="icon">
+                            <title>To</title>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <input type="text" name="to-location" placeholder="Enter destination" id="to-input" />
+                    </div>
+                    <div class="check-prices">
+                        <input type="submit" name="submit" value="Check Rides" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="step-2">
+        <div class="header">
+            <div class="header-text">
+                Where you heading?
+            </div>
+        </div>
+        <div class="ride-card">
+            <form action="/ride/create" method="POST" class="requestForm">
+                <div class="cars">
+                    <div class="car-ride">
+                        <div class="car-container">
+                            <div class="logo">
+                                <p class="quickie-logo">Quickie Cars</p>
+                            </div>
+                            {% for car in cars %}
+                            <div class="car-card" data-car-name='{{car.car_name}}' onclick="handleCarSelect(this)">
+                                <div class="car-image">
+                                    <img src="../static{{car.car_image_path}}" />
+                                </div>
+                                <div class="car-details">
+                                    <div class="car-text">
+                                        <div class="car-name-capacity">
+                                            <div class="car-name">
+                                                {{car.car_name}}
+                                            </div>
+                                            <div class="car-capacity">
+                                                <i class="fa-solid fa-person"></i>
+                                                {{car.passenger_capacity}}
+                                            </div>
+                                        </div>
+                                        <div class="car-desc">
+                                            {{car.car_description}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="car-price">
+                                    
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="request-ride" onclick="handleRequestRide()">
+                                <div class="request-ride-car">
+
+                                </div>
+                                <div class="request-ride-button">
+                                    Request Ride
+                                </div>
+                                <input type="hidden" class="hiddenFrom" name="from-location" value="">
+                                <input type="hidden" class="hiddenTo" name="to-location" value="">
+                                <input type="hidden" class="hiddenCar" name="car-name" value="">
+                                <input type="hidden" class="hiddenPrice" name="price" value="">
+                                <input type="hidden" class="hiddenDuration" name="duration" value="">
+                            </div>
+            </form>
+        </div>
+</div>
+</form>
+</div>
+
+</section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const heading = document.querySelector(".header");
+        heading.style.opacity = '1';
+        heading.style.transform = 'translateY(-20%)';
+
+        const originalCarPrices = Array.from(document.querySelectorAll('.car-price')).map(element => {
+        return parseFloat(element.innerHTML);
+    });
+
+        setTimeout(() => {
+            const rideCard = document.querySelector(".ride-card");
+            rideCard.style.opacity = '1';
+        }, 500);
+    });
+
+    let fromLocation = null
+    let toLocation = null
+    let price = null
+    let duration = null
+
+    async function handleStep1Submit() {
+        fromLocation = document.querySelector('#from-input').value
+        toLocation = document.querySelector('#to-input').value
+
+        if (!fromLocation || !toLocation) {
+            return
+        }
+
+        const fromCoords = await getGeoLocation(fromLocation)
+        const toCoords = await getGeoLocation(toLocation)
+
+        const coordinates = {
+            from: fromCoords,
+            to: toCoords
+        }
+
+        fetch('/ride/calculate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(coordinates)
+        }).then(res => res.json()).then(data => {
+
+            if(data.status != 'success'){
+                const confirm = window.confirm('This ride is very long and you have low chances of getting a driver. Do you still want to continue?')
+                if(!confirm){
+                    window.location.href = '/home'
+                }
+            }
+            const cars = document.querySelectorAll('.car-card');
+            const car_prices = data.car_prices;
+            duration = data.duration
+
+            cars.forEach((car, index) => {
+                const carPriceElement = car.querySelector('.car-price');
+                carPriceElement.innerHTML = `€${car_prices[index].toFixed(2)}`;
+            });
+        })
+
+        const requestRide = document.querySelector('.request-ride')
+        requestRide.style.opacity = 0
+
+        const step1 = document.querySelector(".step-1");
+        const step2 = document.querySelector(".step-2");
+        step1.style.transform = 'translate(-100%, -40%)';
+        step1.style.scale = '0.9';
+
+        step2.style.transform = 'translateX(-40%)';
+        step2.style.opacity = '1';
+
+        const step1heading = step1.querySelector(".header-text");
+        step1heading.innerHTML = 'Choose your ride'
+
+    }
+
+    let selectedCar = null
+
+    function handleCarSelect(element) {
+        if (selectedCar) {
+            selectedCar.classList.remove('selected-car');
+        }
+
+        element.classList.add('selected-car');
+
+        selectedCar = element;
+
+        const requestRide = document.querySelector('.request-ride')
+        const carDetails = requestRide.querySelector('.request-ride-car')
+
+        const image = selectedCar.querySelector('img')
+        const src = image.getAttribute('src')
+        price = selectedCar.querySelector('.car-price').innerHTML
+        const name = selectedCar.getAttribute('data-car-name')
+
+        carDetails.innerHTML = `
+        <img src=${src} style='height:50px;width:auto;' />
+        ${name}
+        <b>${price}</b>
+    `
+        requestRide.style.opacity = 1
+
+    }
+
+    function handleRequestRide() {
+        if (selectedCar) {
+            const carname = selectedCar.getAttribute('data-car-name')
+            const hiddenCar = document.querySelector('.hiddenCar')
+            const hiddenFrom = document.querySelector('.hiddenFrom')
+            const hiddenTo = document.querySelector('.hiddenTo')
+            const hiddenPrice = document.querySelector('.hiddenPrice')
+            const hiddenDuration = document.querySelector('.hiddenDuration')
+
+
+            hiddenCar.value = carname
+            hiddenFrom.value = fromLocation
+            hiddenTo.value = toLocation
+            hiddenPrice.value = parseInt(price.substring(1))
+            hiddenDuration.value = duration
+
+            const form = document.querySelector('.requestForm')
+
+            form.submit();
+
+
+        } else {
+            console.log('no car selected')
+        }
+    }
+</script>
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC" async defer></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDE_00Ht-RtZVX21AL2a0JnIK2RatyL3E&callback=getGeoLocation&v=weekly"
+    defer></script>
+
+{% endblock %}

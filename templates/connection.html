@@ -1,0 +1,153 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='connection.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Quickie | Login {% endblock %}
+
+{% block content %}
+<section class="main">
+    <div class="connection">
+        <div class="header">
+            <span class="create-header">Create an Account <span class="or-header">or</span></span>
+            <span class="login-header">Login</span>
+        </div>
+        <div class="main-content">
+
+            <form class="login-form" onsubmit="handleSubmit(event)">
+                <input type="email" placeholder="Enter your email address" name="email" />
+                <input type="hidden" placeholder="Enter your password" name="password" id="password"
+                    autocomplete="new-password" />
+                <input type="submit" value="Continue" />
+            </form>
+            <div class="or">
+                <div class="horizontal-line"></div>
+                <div class="text">OR</div>
+                <div class="horizontal-line"></div>
+            </div>
+            <div class="other-options">
+                <div class="google-login">
+                    <div class="logo">
+                        <img src="../static/icons/google.png" />
+                    </div>
+                    <div class="text">
+                        Continue with Google {{existing}}
+                    </div>
+                </div>
+                <div class="facebook-login">
+                    <div class="logo">
+                        <i class="fa-brands fa-facebook fa-xl" style="color: blue;"></i>
+                    </div>
+                    <div class="text">
+                        Continue with Facebook
+                    </div>
+                </div>
+            </div>
+            <div class="tos">
+                By proceeding, you consent to get calls, WhatsApp or SMS messages, including by automated means, from
+                Uber
+                and its affiliates to the number provided.
+
+                This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
+            </div>
+        </div>
+        <div class="signup">
+            <div class="roles">
+                <div class="rider" onclick="handleRiderForm()">
+                    <span>Rider</span>
+                </div>
+                <div class="driver" onclick="handleDriverForm()">
+                    <span>Driver</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+    console.log(window.innerWidth)
+    function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(document.querySelector('form'))
+        if (formData.get('password') !== '') {
+            fetch('/login', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                if (data.user) {
+                    // USER AUTH SUCCESS
+                    console.log("USER AUTH SUCCESS, sending to otp")
+                    window.location.href = '/otp';
+                } else {
+                    //  USER AUTH FAILS
+                }
+            })
+        } else {
+            fetch('/check', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                console.log(data.user)
+                if (data.user) {
+                    // USER EXISTS
+                    const createHeader = document.querySelector('.create-header')
+                    const loginHeader = document.querySelector('.login-header')
+                    const passwordInput = document.querySelector('#password')
+                    const orDiv = document.querySelector('.or')
+                    const otherOptions = document.querySelector('.other-options')
+                    const tos = document.querySelector('.tos')
+
+                    if (window.innerWidth < 508) {
+                        loginHeader.style.animation = 'moveRight 1.3s forwards'
+                        createHeader.style.animation = 'moveLeftFade 1.3s forwards'
+                    } else {
+                        loginHeader.style.animation = 'jumpAndLeft 1.3s forwards'
+                        createHeader.style.animation = 'moveLeftFade 1.3s forwards 0.63s'
+                    }
+                    passwordInput.type = 'password'
+                    setTimeout(() => {
+                        passwordInput.style.height = '40px'
+                        passwordInput.style.padding = '25px'
+                        // orDiv.style.opacity = '0'
+                        // otherOptions.style.opacity = '0'
+
+                    }, 800)
+                } else {
+                    // USER DOESNT EXIST, USER CREATION
+                    const createHeader = document.querySelector('.create-header')
+                    const loginHeader = document.querySelector('.login-header')
+                    const orHeader = document.querySelector('.or-header')
+                    const passwordInput = document.querySelector('#password')
+
+                    if (window.innerWidth < 508) {
+                        loginHeader.style.animation = 'moveLeftFade 1.3s forwards'
+                        createHeader.style.animation = 'moveRight 1.3s forwards'
+                    } else {
+                        loginHeader.style.animation = 'moveRightFade 0.8s forwards 0.63s'
+                        createHeader.style.animation = 'jumpAndRight 1.3s forwards'
+                        orHeader.style.animation = 'moveRightFade 1.3s forwards 0.63s'
+                    }
+                    passwordInput.type = 'password'
+                    setTimeout(() => {
+                        passwordInput.style.height = '0px'
+                        passwordInput.style.padding = '0px'
+                    }, 800)
+                    setTimeout(() => {
+                        localStorage.setItem('email', formData.get('email'))
+                        window.location.href = '/signup'
+                    }, 1000)
+                }
+            })
+        }
+
+    }
+
+</script>
+{% endblock %}

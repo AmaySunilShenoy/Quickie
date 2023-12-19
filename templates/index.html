@@ -1,0 +1,51 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %}Quickie | Welcome{% endblock %}
+
+{% block nav_items %}
+<li class="nav-item">
+    <a class="nav-link" href="/connection">
+    <div class="connection">
+        <i class="fa-solid fa-user"></i>
+    </div>
+</a>
+</li>
+{% endblock %}
+
+{% block content %}
+    <section class="top">
+        <div class="ride">
+            <div>
+            <div class="text">
+                <p class="main-text">Your Fast Lane <br>to Any Destination </p><br>
+                <p class="sub-text">Get a Ride Quick, Reach your Destination Quicker</p>
+            </div>
+            <div class="from-to">
+                <div class="from">
+                    <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" data-baseweb="icon"><title>From</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z" fill="currentColor"></path></svg>
+                    <input type="text" name="from-location" placeholder="Enter location" />
+                    <i class="fa-solid fa-location-arrow fa-xl right-icon" title="Current Location"></i>
+                </div>
+                <div class="connector"></div>
+                <div class="to">
+                    <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" data-baseweb="icon"><title>To</title><path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z" fill="currentColor"></path></svg>
+                    <input type="text" name="to-location" placeholder="Enter destination"/>
+                </div>
+                <div class="check-prices">
+                    <input type="submit" name="submit" value="Check Rides" />
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="welcomeImage">
+            <img src="../static/images/welcomeimage.png"/>
+        </div>
+    </section>
+{% endblock %}

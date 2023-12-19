@@ -1,0 +1,377 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='signup.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block title %}Quickie | Sign Up {% endblock %}
+
+{% block nav_items %}
+{% endblock %}
+
+{% block content %}
+<section class="main">
+    <div class="signup">
+        {% if step != 1 and step != 2 %}
+
+        {% else %}
+        <div class="header">
+            <span class="create-header">Create an Account</span>
+        </div>
+        {% endif %}
+        {% if step == 1 %}
+        <div class="step step1">
+            <div class="title">
+                What should we call you?
+            </div>
+            <div class="form">
+                <form action="/signup" onsubmit="handleFormSubmit('1')" method="POST">
+                    <input type="hidden" name="step" value="1">
+                    <div class="names">
+                        <input class="name" type="text" placeholder="First Name" name="first_name" />
+                        <input class="name" type="text" placeholder="Last Name" name="last_name" />
+                    </div>
+                    <input class="continue" type="submit" value="Continue" />
+                </form>
+            </div>
+        </div>
+        {% elif step == 2%}
+        <div class="step step2">
+            <div class="title">
+                Set Up Your Password
+            </div>
+            <div class="form">
+                <form action="/signup" onsubmit="handleFormSubmit('2')" method="POST">
+                    <input type="hidden" name="step" value="2">
+                    <input class="password" type="password" placeholder="Enter your password" name="password"
+                        id="password" autocomplete="new-password" />
+                    <input class="password" type="password" placeholder="Re-enter your password" name="conpassword"
+                        id="password" autocomplete="new-password" />
+
+                    <div class="buttons">
+                        <button class="back" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input class="continue" type="submit" value="Continue" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% elif step == 3 %}
+        <div class="step step3">
+            <div class="img-text">
+                <div class="img">
+                    <img
+                        src="https://img.freepik.com/free-vector/man-paying-online-receiving-cashback-wallet_88138-692.jpg?w=1800&t=st=1702154586~exp=1702155186~hmac=1a40ad29565ab0d4372a738a5f52460711ca0f48b581180f270eaf3df34069b8" />
+                </div>
+                <div class="form">
+                    <form action="/signup" method="POST">
+                        <div class="driver-card">
+                            <div class="title">
+                                Fast Cash with Quickie Rides
+                            </div>
+                            <div class="subtitle">
+                                Get people to their destination and earn money
+                            </div>
+                            <input type="hidden" name="step" value="" id="pivot">
+
+                            <div class="buttons">
+                                <button class="skip" onclick="handleSkip(true)" type="submit">Skip</button>
+                                <button class="continue" type="submit" onclick="handleSkip(false)">Become a
+                                    driver</i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% elif step == 'skip' %}
+        <div class="step step2">
+            <div class="title payment-title">
+                Add a Payment Method
+            </div>
+            <div class="form payment-form">
+                <form action="/customer/register" onsubmit="event.preventDefault(); handleCreateUser('customer')" method="POST">
+                    <div class="wallet-cards">
+                        <div class="wallet-card">
+                            <div class="heading">
+                                Visa
+                                <img src="https://d3i4yxtzktqr9n.cloudfront.net/web-money/c57afa92c9773650.svg" />
+                            </div>
+                            <div class="card-details">
+                                <input class="card-number" type="text" placeholder="Card Number" name="card_number"
+                                    maxlength="16" required />
+                                <div class="card-details-bottom">
+                                    <div id="expiryDate">
+                                        <input class="card-expiry" type="text" id="expiryMonth" name="expiry_month"
+                                            placeholder="MM" maxlength="2" required>
+                                        /
+                                        <input class="card-expiry" type="text" id="expiryYear" name="expiry_year"
+                                            placeholder="YY" maxlength="2" required>
+                                    </div>
+                                    <input class="card-cvv" type="password" placeholder="CVC" name="cvv" maxlength="3"
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            <button class="back" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                            <input class="continue" type="submit" value="Create Your Account" />
+                        </div>
+                </form>
+            </div>
+        </div>
+
+        {% elif step == 'driver1' %}
+        <div class="step step2">
+            <div class="title">
+                Thank you for your interest in joining our team
+            </div>
+            <div class="subtitle">
+                We just need a few more details to get you started
+            </div>
+            <div class="form">
+                <form action="/signup" method="POST">
+                    <input type="hidden" name="step" value="driver1">
+                    <div class="buttons">
+                        <button class="back"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input class="continue" type="submit" value="Continue" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% elif step == 'driver2' %}
+        <div class="step step2">
+            <div class="title">
+                Which service are you interested in?
+            </div>
+            <div class="form">
+                <form action="/signup" onsubmit="handleFormSubmit('driver2')" method="POST">
+                    <div class="car-form">
+                        <input type="hidden" name="step" value="driver2">
+                        {% for car in cars %}
+                        <div class="car-card" data-car-name='{{car.car_name}}' onclick="handleCarSelect(this)">
+                            <div class="car-image">
+                                <img src="../static{{car.car_image_path}}" />
+                            </div>
+                            <div class="car-details">
+                                <div class="car-text">
+                                    <div class="car-name-capacity">
+                                        <div class="car-name">
+                                            {{car.car_name}}
+                                        </div>
+                                        <div class="car-capacity">
+                                            <i class="fa-solid fa-person"></i>
+                                            {{car.passenger_capacity}}
+                                        </div>
+                                    </div>
+                                    <div class="car-desc">
+                                        {{car.car_description}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="car-price">
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="buttons car-buttons" id="invisibleButtons">
+                        <button class="back"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input class="continue" type="submit" value="Continue" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% elif step == 'driver3' %}
+        <div class="step step2">
+            <div class="title document-title">
+                Upload your documents
+            </div>
+            <div class="form document-form">
+                <form action="/driver/register" onsubmit="event.preventDefault(); handleCreateUser('driver')" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="step" value="driver1">
+                    <div class="documents">
+                        <div class="profile-picture" style="display: flex;justify-content: center;">
+                            <div id="profile-container">
+                              <img id="profileImage" src="../static/images/profile_pictures/default-profile.jpg" />
+                            </div>
+                            <input id="imageUpload" type="file" name="profile_picture" placeholder="Photo" required capture>
+                        </div>
+                        <div class="other">
+                            <div class="driver-license">
+                                <div class="document-title">
+                                    Driver's License
+                                </div>
+                                <div class="document-upload">
+                                    <input type="file" name="driver_license" />
+                                </div>
+                            </div>
+                            <div class="vehicle-registration">
+                                <div class="document-title">
+                                    Car Registration
+                                </div>
+                                <div class="document-upload">
+                                    <input type="file" name="car_registration" />
+                                </div>
+                            </div>
+                            <div class="bank-details">
+                                <div class="document-title">
+                                    Bank Details
+                                </div>
+                                <div class="document-upload">
+                                    <input type="file" name="bank_details" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button class="back"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input class="continue" type="submit" value="Continue" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+
+$("#profileImage").click(function (e) {
+    $("#imageUpload").click();
+  });
+
+  function fasterPreview(uploader) {
+    if (uploader.files && uploader.files[0]) {
+      $('#profileImage').attr('src',
+        window.URL.createObjectURL(uploader.files[0]));
+    }
+  }
+
+  $("#imageUpload").change(function () {
+    fasterPreview(this);
+  });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const step = document.querySelector(".step1");
+        step.style.transform = "translateY(0%)";
+        step.style.opacity = "1";
+    });
+
+
+    let selectedCar = null
+
+function handleCarSelect(element) {
+    if (selectedCar) {
+        selectedCar.classList.remove('selected-car');
+    }
+
+    element.classList.add('selected-car');
+    selectedCar = element;
+
+
+    const buttons = document.querySelector('#invisibleButtons');
+    buttons.style.opacity = '1';
+    buttons.style.transform = 'translateY(0%)';
+}
+
+
+    function handleFormSubmit(step) {
+        if (step === '1') {
+            const first_name = document.querySelector(".name[name='first_name']").value;
+            const last_name = document.querySelector(".name[name='last_name']").value;
+
+            localStorage.setItem("first_name", first_name);
+            localStorage.setItem("last_name", last_name);
+        } else if (step === '2') {
+            const password = document.querySelector(".password[name='password']").value;
+            const conpassword = document.querySelector(".password[name='conpassword']").value;
+
+            localStorage.setItem("password", password);
+            localStorage.setItem("conpassword", conpassword);
+        } else if (step === 'driver2') {
+            const selectedCar = document.querySelector(".selected-car");
+            const carName = selectedCar.getAttribute("data-car-name");
+            localStorage.setItem("car_name", carName);
+        }
+    }
+
+    function handleSkip(bool) {
+        const hiddenInput = document.querySelector("#pivot");
+        if (bool) {
+            hiddenInput.value = "skip";
+        } else {
+            hiddenInput.value = "driver";
+        }
+    }
+
+    function handleCreateUser(userRole) {
+        const first_name = localStorage.getItem("first_name");
+        const last_name = localStorage.getItem("last_name");
+        const email = localStorage.getItem("email");
+        const password = localStorage.getItem("password");
+
+        const form = document.querySelector("form");
+        const formData = new FormData(form);
+        formData.append("first_name", first_name);
+        formData.append("last_name", last_name);
+        formData.append("email", email);
+        formData.append("password", password);
+
+        if (userRole == 'customer') {
+            fetch("/customer/register", {
+                method: "POST",
+                body: formData
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === "success") {
+                        const form = document.querySelector(".payment-form");
+                        const title = document.querySelector(".payment-title");
+                        form.innerHTML = ''
+
+                        title.innerHTML = "Thank you for registering as a rider! You will soon be redirected to the login page."
+
+                        setTimeout(() => {
+                            window.location.href = "/connection";
+                        }, 1500);
+
+                    }
+                })
+                .catch((err) => console.log(err));
+        }
+        else {
+
+            const selectedCar = localStorage.getItem("car_name");
+            formData.append("car_type", selectedCar);
+            fetch("/driver/register", {
+                method: "POST",
+                body: formData
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === "success") {
+                        const form = document.querySelector(".document-form");
+                        const title = document.querySelector(".document-title");
+                        form.innerHTML = ''
+
+                        title.innerHTML = "Thank you for registering as a driver! You will soon be redirected to the login page."
+
+                        setTimeout(() => {
+                            window.location.href = "/connection";
+                        }, 1500);
+
+                    }
+                })
+        }
+
+    }
+
+</script>
+{% endblock %}

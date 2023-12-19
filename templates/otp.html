@@ -1,0 +1,66 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='otp.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %} Quickie | Login {% endblock %}
+
+{% block content %}
+    <section class="main">
+        <div class="otp-verify">
+            <div class="header">
+                <span class="otp-header">An OTP has been sent to your email: </span>
+            </div>
+            <div class="email">
+                <span class="email-span">{{ user_email[:1] + '*********' +'@' + user_email.split('@')[1] }}</span>
+            </div>
+            <form action="/otp" method="POST" oninput="handleInput(event)">
+                <div class="numbers">
+                    {{ form.number1 }}
+                    {{ form.number2 }}
+                    {{ form.number3 }}
+                    {{ form.number4 }}
+                </div>
+                {{ form.verify }}
+            </form>
+           
+            <div class="tos">
+                By proceeding, you consent to get calls, WhatsApp or SMS messages, including by automated means, from Uber and its affiliates to the number provided.
+    
+    This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.  
+            </div>
+        </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block js %}
+<script>
+
+    function handleInput(event) {
+        const input = event.target;
+        const value = input.value;
+        const key = event.target.key
+        console.log(key)
+    if (value.length === 0) {
+      // Move focus to the previous input field on backspace
+      var prevField = input.previousElementSibling;
+      if (prevField !== null) {
+        prevField.focus();
+      }
+    } else {
+      // Move focus to the next input field on input
+      var nextField = input.nextElementSibling;
+      if (nextField !== null) {
+        nextField.focus();
+      }
+    }
+  }
+
+
+</script>
+{% endblock %}

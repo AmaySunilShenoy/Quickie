@@ -1,0 +1,389 @@
+{% extends "baseuser.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='ride.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+<!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=console.debug&libraries=maps,marker&v=beta"> -->
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    let map, directionsService, directionsRenderer, startMarker, endMarker;
+    let driverPositionIndex = 0;
+    let driverPositionInterval;
+
+    function initProjectedRide() {
+        // Initialize the map
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 25,
+            mapTypeId: "terrain",
+            mapTypeControl: false,
+        });
+
+        google.maps.event.clearInstanceListeners(map);
+
+        // Initialize the Directions service and renderer
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true })
+
+        // Call the function to display the route
+        calculateAndDisplayRoute();
+    }
+
+    function calculateAndDisplayRoute() {
+        // Define the start and end points
+        const start = '{{ride.driver_location}}';
+        const end = '{{ride.from_location}}';
+
+        // Request directions from the Directions service
+        directionsService.route(
+            {
+                origin: start,
+                destination: end,
+                travelMode: 'DRIVING'
+            },
+            (response, status) => {
+                if (status === 'OK') {
+
+
+                    directionsRenderer.setDirections(response);
+                    startMarker = new google.maps.Marker({
+                        position: response.routes[0].legs[0].start_location,
+                        map: map,
+                        icon: "{{ url_for('static', filename='icons/car-icon-small.png') }}",
+                        title: 'Start'
+                    });
+
+                    endMarker = new google.maps.Marker({
+                        position: response.routes[0].legs[0].end_location,
+                        map: map,
+                        icon: "{{ url_for('static', filename='icons/map-pointer.png') }}", // Specify the path to your start marker icon
+                        title: 'Start'
+                    });
+
+                    
+        if('{{user.role}}' == 'driver'){
+            simulateDriverMovement(response);
+        }
+
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            }
+        );
+    }
+
+    function simulateDriverMovement(response) {
+      const route = response.routes[0].legs[0];
+      const totalSteps = route.steps.length;
+
+      // Set interval to update driver position
+      driverPositionInterval = setInterval(() => {
+        if (driverPositionIndex < totalSteps) {
+          const nextStep = route.steps[driverPositionIndex];
+          const nextPosition = nextStep.start_location;
+
+          // Update driver marker position
+          startMarker.setPosition(nextPosition);
+
+          // Center map on driver's current position
+          map.setCenter(nextPosition);
+          socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': nextPosition.toJSON() });
+
+          driverPositionIndex++;
+        } else {
+            startMarker.setPosition(route.end_location);
+            socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': nextPosition.toJSON() });
+            handleChatMessageSend('I have arrived at your location')
+            const heading = document.querySelector('.map-heading');
+            heading.innerHTML = 'You have arrived at the customer\'s location';
+            // Stop the simulation when the driver reaches the destination
+          clearInterval(driverPositionInterval);
+        }
+      }, 2000); // Adjust the interval duration as needed (milliseconds)
+    }
+
+    function updateDriverLocation(position) {
+        startMarker.setPosition(position);
+        map.panTo(position);
+    }
+</script>
+
+
+{% endblock %}
+
+{% block title %} Quickie | Home {% endblock %}
+
+{% block content %}
+<section class="main">
+
+    <section class="left-panel">
+        <div class="driver-info driver-info-customer" style="margin-top: 0px">
+            <div class="driver-content">
+                <div class="chatButton" onclick="toggleChatPanel(true)">
+                    <i class="fas fa-comments"></i>
+                </div>
+            <div class="driver-all-details">
+                <div class="driver-image">
+                    <img src="data:image/png;base64,{{ driver.profile_picture }}" alt="Profile Picture">
+                </div>
+                <div class="driver-details">
+                    <div class="driver-name">
+                        {{driver.firstname}} {{driver.lastname}}
+                    </div>
+                    <div class="driver-rating">
+                        <i class="fa-solid fa-star"></i>
+                        {{driver.rating}}
+                    </div>
+                </div>
+            </div>
+            <div class="ride-details">
+            <div class="heading">
+                Ride Details
+            </div>
+            <div class="ride-from-to-other">
+                    <div class="ride-from-to">
+                        <div class="trip-from">
+                            <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                data-baseweb="icon">
+                                <title>From</title>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                            {{ride.from_location}}
+                        </div>
+                        <div class="connector"></div>
+                        <div class="trip-to">
+                            <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                data-baseweb="icon">
+                                <title>To</title>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
+                                    fill="currentColor"></path>
+                            </svg>
+                            {{ride.to_location}}
+                        </div>
+                    </div>
+                    <div class="other">
+                        <div class="price">
+                            €{{ride.price}}
+                        </div>
+                        <div class="duration">
+                            {{ride.duration}} mins
+                        </div>
+                    </div>
+                </div>
+                <div class="ride-otp">
+                    <div class="heading">
+                        Ride OTP
+                    </div>
+                    {% if user.role == 'driver' %}
+                    <form class="otp-form" action="/otp" method="POST" oninput="handleInput(event)">
+                        <div class="numbers">
+                            {{ form.number1 }}
+                            {{ form.number2 }}
+                            {{ form.number3 }}
+                            {{ form.number4 }}
+                        </div>
+                        {{ form.verify }}
+                    </form>
+                    {% else %}
+                    <form class="otp-form" action="/otp" method="POST" oninput="handleInput(event)">
+                        {{ form.hidden_tag() }}
+                        <div class="numbers">
+                            <input id="number1" maxlength="1" minlength="1" name="number1" required="" type="text"
+                                value="{{ride.ride_otp[0]}}">
+                            <input id="number2" maxlength="1" minlength="1" name="number2" required="" type="text"
+                                value="{{ride.ride_otp[1]}}">
+                            <input id="number3" maxlength="1" minlength="1" name="number3" required="" type="text"
+                                value="{{ride.ride_otp[2]}}">
+                            <input id="number4" maxlength="1" minlength="1" name="number4" required="" type="text"
+                                value="{{ride.ride_otp[3]}}">
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+                <div class="cancel-ride" onclick="handleCancelRide('{{ride._id}}')">
+                    <input type="submit" name="submit" value="Cancel Ride" />
+                </div>
+            </div>
+            <div class="chat-content" style="display: none;">
+            <div class="backButton" onclick="toggleChatPanel(false)">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="chat-heading">
+                Chat
+            </div>
+            <div class="chat">
+                <div class="chat-messages">
+                    {% for message in messages %}
+                    {% if message.sender_id == user.id %}
+                    <div class="message sent">
+                        <div class="message-text">
+                            {{message.message}}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="message received">
+                        <div class="message-text">
+                            {{message.message}}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="chat-input">
+                    <form class="send-message" onsubmit="event.preventDefault()">
+                        {{ form.hidden_tag() }}
+                        <input class="messageInput" type="text" name="message" placeholder="Type a message" />
+                        <button class="sendButton" onclick="playSendTone();handleChatMessageSend(document.getElementById('messageInput').value)"> Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+    <section class="map-section">
+        <div class="heading map-heading">
+            {% if user.role == 'driver' %}
+            Head to the customer's location
+            {% else %}
+            The driver is on the way to your location
+            {% endif %}
+        </div>
+        <div class="map" id="map">
+
+        </div>
+    </section>
+</section>
+{% endblock %}
+
+{% block js %}
+<script>
+    var socket;
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+
+        socket = io.connect('http://' + document.domain + ':' + location.port + '/sockets');
+
+        socket.on('connect', function () {
+            console.log('Connected to server');
+
+        socket.on('receive_message', function (data) {
+            console.log('Message received:', data.message, 'from', data.sender);
+            const messageBox = document.querySelector('.chat-messages');
+            if (data.sender == '{{user.role}}')
+            {
+                messageBox.innerHTML += `
+                <div class="message sent">
+                    <div class="message-text">
+                        ${data.message}
+                    </div>
+                </div>
+                `
+                playSendTone();
+            } else {
+                messageBox.innerHTML += `
+                <div class="message received">
+                    <div class="message-text">
+                        ${data.message}
+                    </div>
+                </div>
+                `
+                playReceiveTone();
+            }
+
+            messageBox.scrollTop = messageBox.scrollHeight;
+        });
+
+        socket.on('ride_cancelled_by_driver', function (data) {
+            console.log('Ride cancelled by driver');
+            socket.disconnect();
+            window.location.href = '/home';
+        });
+
+        socket.on('ride_cancelled_by_customer', function (data) {
+            console.log('Ride cancelled by customer');
+            socket.disconnect();
+            window.location.href = '/home';
+        });
+
+        if('{{user.role}}' == 'customer'){
+        socket.on('updated_driver_location', function (data) {
+            updateDriverLocation(data.location);
+        });
+    }
+
+    });
+    });
+
+    function handleCancelRide(ride_id) {
+        const cancelConfirm = confirm("Are you sure you want to cancel this ride?");
+        if (cancelConfirm) {
+                socket.emit('ride_cancelled', { 'ride_id': '{{ride._id}}', 'cancelled_by': '{{user.role}}' });
+                fetch(`/ride/cancel/${ride_id}`, {
+                    method: 'POST',
+                }).then(response => response.json()).then(result => {
+                    console.log(result)
+                    if (result.status == 'success') {
+                        socket.disconnect();
+                        window.location.href = '/home';
+                    }
+                });
+            }
+
+        }
+
+    function toggleChatPanel(bool) {
+        const driverPanel = document.querySelector('.driver-content');
+        const chatPanel = document.querySelector('.chat-content');
+
+        if(bool){
+            driverPanel.style.display = 'none';
+            chatPanel.style.display = 'block';
+        } else {
+            driverPanel.style.display = 'flex';
+            chatPanel.style.display = 'none';
+        }
+    }
+
+    function handleChatMessageSend(message) {
+        console.log('Sending message:', message);
+        socket.emit('send_message', { 'ride_id': '{{ride._id}}', 'sender': '{{user.role}}', 'message': message });
+        fetch(`/chat/message/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                sender: '{{user.id}}',
+                receiver: '{{ride.driver if user.role == "customer" else ride.user}}',
+                chat_id: '{{ride.chat_id}}'
+            })
+        }).then(response => response.json()).then(result => {
+            console.log(result)
+        })
+
+        
+
+        messageField.value = '';
+        return true;
+    }
+    function playSendTone() {
+      var audio = new Audio("{{ url_for('static', filename='audio/send.mp3') }}");
+      audio.play();
+    }
+
+    function playReceiveTone() {
+      var audio = new Audio("{{ url_for('static', filename='audio/receive.mp3') }}");
+      audio.play();
+    }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=initProjectedRide"></script>
+
+{% endblock %}

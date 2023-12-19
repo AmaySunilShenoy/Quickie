@@ -1,0 +1,121 @@
+.navbar-dark{
+    background-color: black;
+}
+
+
+.navbar-brand{
+    margin-left: 100px;
+    font-size: larger;
+    font-weight: bold;
+    font-family: 'Dosis';
+}
+
+.navbar-nav{
+    margin-left: auto;
+    width: 30%;
+    justify-content: end;
+}
+
+.nav-item{
+    font-size: large;
+    font-weight: bold;
+    font-family: 'Oswald';
+    width: 30%;
+
+    .connection{
+        height: 40px;
+        width: 70px;
+        border-radius: 20px;
+        padding: 3px 20px;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & i{
+            color: black;
+        }
+    }
+
+
+    a {
+        margin-top: 1px;
+    }
+}
+.drop-down{
+    margin-right: 10px;
+    color: white;
+}
+
+.profile{
+    .profile-picture {
+        width: 40px;
+        height: 40px;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #000; /* Text color */
+        font-family: 'Onest';
+        margin-right: 15px;
+      }
+
+      .sub-menu-wrap{
+        position: absolute;
+        visibility: hidden;
+        top: 90%;
+        right: 0.5%;
+        width: fit-content;
+        z-index: 999;
+      }
+      .sub-menu{
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 0 2px #000000;
+        font-family: 'Onest';
+        font-size: 15px;
+        width: 150px;
+
+        .name{
+            margin: 5px;
+            font-family: 'Onest';
+
+        }
+
+        .items{
+            margin: 5px;
+            
+            .item{
+                display: flex;
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                margin: 5px;
+                padding: 5px;
+                border-radius: 5px;
+                font-family: 'Onest';
+
+                &:hover{
+                    background-color: #ccc;
+                    cursor: pointer;
+                }
+
+                & i{
+                    margin-right: 10px;
+                }
+            }
+        }
+
+      }
+
+      .active{
+        visibility: visible;
+      }
+}

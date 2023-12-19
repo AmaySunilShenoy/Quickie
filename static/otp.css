@@ -1,0 +1,216 @@
+body {
+    overflow-y: hidden;
+    z-index: 0;
+}
+
+.otp-verify {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    z-index: -1;
+
+    .header {
+        font-size: 40px;
+        font-weight: bold;
+        font-family: 'Gabarito';
+
+        .otp-header {
+            display: inline-block; 
+        }
+    }
+
+    .email{
+        .email-span{
+            font-family: 'Gabarito';
+            font-size: '20px';
+        }
+    }
+
+
+    & form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 20%;
+        margin: 10px;
+        
+        .numbers{
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+
+        & input[type="text"] {
+            height: 40px;
+            width: 40px;
+            margin: 15px 0;
+            padding: 5px;
+            text-align: center;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            &:focus {
+                border: 2px solid black;
+                outline: none;
+            }
+        }
+    }
+    & input[type="submit"] {
+        width: 200px;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        background-color: black;
+        color: white;
+        font-family: 'Onest';
+
+
+        &:hover {
+            scale: 1.02;
+        }
+    }
+    }
+
+    .or {
+        height: 20px;
+        display: flex;
+        margin: 10px;
+        align-items: center;
+        transition: all 0.3s ease-in-out;
+
+        .text {
+            margin: 0 2px;
+            font-family: 'Onest';
+        }
+
+        .horizontal-line {
+            border-bottom: 2px solid;
+            width: 185px;
+        }
+    }
+
+    .other-options {
+        transition: all 0.3s ease-in-out;
+
+        .google-login,
+        .facebook-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            width: 350px;
+            margin: 10px 0;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: rgb(237, 234, 234);
+            border: none;
+            font-family: 'Onest';
+
+            .text {
+                display: inline;
+            }
+
+            .logo {
+                display: inline;
+                margin: 0 5px;
+                justify-self: start;
+
+                & img {
+                    height: 40px;
+                    width: 40px;
+                }
+            }
+        }
+    }
+
+    .tos {
+        position: absolute;
+        bottom: 5%;
+        left: 41%;
+        width: 300px;
+        font-size: small;
+        color: rgb(158, 158, 158);
+        transition: all 0.3s ease-in-out;
+    }
+}
+
+@keyframes moveLeftFade {
+
+    0%{
+        transform: translateX(0%);
+        opacity: 100%;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0%;
+    }
+}
+
+@keyframes moveRight {
+
+    0%{
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(200%);
+    }
+}
+
+@keyframes moveRightFade {
+
+    0%{
+        transform: translateX(0%);
+        opacity: 100%;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0%;
+    }
+}
+
+@keyframes jumpAndLeft {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%{
+        transform: translateY(-20%);
+    }
+
+    20% {
+        transform: translateX(20%);
+        transform: translateY(0%);
+    }
+
+    50%{
+        transform: translateX(15%);
+    }
+
+    100% {
+        transform: translateX(-200%);
+    }
+}
+
+@keyframes jumpAndRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%{
+        transform: translateY(20%);
+    }
+
+    20% {
+        transform: translateX(-20%);
+        transform: translateY(0%);
+    }
+
+    50%{
+        transform: translateX(-15%);
+    }
+
+    100% {
+        transform: translateX(18%);
+    }
+}
