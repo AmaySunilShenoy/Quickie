@@ -38,8 +38,9 @@ def check():
     if email:
         user = check_user(email)
         if user:
-            return {'user':user}
+            return {'user':'exists'}
         else:
+            session['signup_email'] = email
             return {'user':None}
     else:
         print('no email found in /check')
@@ -60,7 +61,7 @@ def otp():
             print('user inputted:',user_input_otp, 'and correct is',otp)
             if user_input_otp == f'{otp}':
                 user = session.get('authenticated_user')
-                login_user(User(*user))
+                login_user(User(*user))        
                 session.pop('authenticated_user')
                 session.pop('otp')
                 return redirect('/home')
@@ -110,8 +111,13 @@ def signup():
     if request.method == 'POST':
         print('step is', request.form['step'])
         if request.form['step'] == '1':
+            session['signup_firstname'] = request.form['first_name']
+            session['signup_lastname'] = request.form['last_name']
+            print(session.get('signup_firstname'), session.get('signup_lastname'))
             return render_template("signup.html", step=2)
         elif request.form['step'] == '2':
+            session['signup_password'] = request.form['password']
+            print(session.get('signup_password'))
             return render_template("signup.html", step=3)
         elif request.form['step'] == 'skip':
             return render_template("signup.html", step='skip')
@@ -121,6 +127,7 @@ def signup():
             cars = get_car_types(db)
             return render_template("signup.html", step='driver2',cars=cars)
         elif request.form['step'] == 'driver2':
+            session['signup_car'] = request.form['car_name']
             return render_template("signup.html", step='driver3')
         elif request.form['step'] == 'driver3':
             return render_template("signup.html", step='driver4')

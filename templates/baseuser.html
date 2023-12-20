@@ -22,9 +22,15 @@
       <ul class="navbar-nav ml-auto">
         <li>
         <div class="profile">
+          {% if user.role == 'driver' %}
           <div class="profile-picture">
-            {{user.firstname[0].upper() + user.lastname[0].upper()}} 
+            <img src="data:image/png;base64,{{user.profile_picture}}" alt="profile-picture" style="object-fit: cover;height: 40px;width: 40px;border-radius: 50%;" />
           </div>
+          {% else %}
+          <div class="profile-picture">
+            {{user.firstname[0].upper() + user.lastname[0].upper()}}
+          </div>
+          {% endif %}
         <div class="sub-menu-wrap">
           <div class="sub-menu">
             <div class="items">

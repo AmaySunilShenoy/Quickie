@@ -13,6 +13,9 @@
     let driverPositionIndex = 0;
     let driverPositionInterval;
 
+    let currentDriverLocation = '{{ride.driver_location}}';
+    let currentCustomerLocation = '{{ride.from_location}}';
+
     function initProjectedRide() {
         // Initialize the map
         map = new google.maps.Map(document.getElementById('map'), {
@@ -28,13 +31,13 @@
         directionsRenderer = new google.maps.DirectionsRenderer({ map: map, suppressMarkers: true })
 
         // Call the function to display the route
-        calculateAndDisplayRoute();
+        calculateAndDisplayRoute('{{ride.driver_location}}', '{{ride.from_location}}');
     }
 
-    function calculateAndDisplayRoute() {
+    function calculateAndDisplayRoute(startLoc,endLoc) {
         // Define the start and end points
-        const start = '{{ride.driver_location}}';
-        const end = '{{ride.from_location}}';
+        const start = startLoc;
+        const end = endLoc;
 
         // Request directions from the Directions service
         directionsService.route(
@@ -64,7 +67,7 @@
 
                     
         if('{{user.role}}' == 'driver'){
-            simulateDriverMovement(response);
+            simulateDriverMovement(response, 'driver-to-user');
         }
 
                 } else {
@@ -74,7 +77,7 @@
         );
     }
 
-    function simulateDriverMovement(response) {
+    function simulateDriverMovement(response, direction) {
       const route = response.routes[0].legs[0];
       const totalSteps = route.steps.length;
 
@@ -89,24 +92,34 @@
 
           // Center map on driver's current position
           map.setCenter(nextPosition);
-          socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': nextPosition.toJSON() });
+          socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': nextPosition.toJSON(), 'status': 'on_the_way' });
 
           driverPositionIndex++;
         } else {
-            startMarker.setPosition(route.end_location);
-            socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': nextPosition.toJSON() });
-            handleChatMessageSend('I have arrived at your location')
-            const heading = document.querySelector('.map-heading');
-            heading.innerHTML = 'You have arrived at the customer\'s location';
+            if (direction == 'driver-to-user') {
+                startMarker.setPosition(route.end_location);
+                socket.emit('updated_driver_location', { 'ride_id': '{{ride._id}}', 'location': route.end_location.toJSON(), 'status': 'arrived' });
+                handleChatMessageSend('I have arrived at your location')
+                console.log('driver has arrived at the customer\'s location')
+                const heading = document.querySelector('.map-heading');
+                heading.innerHTML = 'You have arrived at the customer\'s location';
+            }
             // Stop the simulation when the driver reaches the destination
           clearInterval(driverPositionInterval);
         }
       }, 2000); // Adjust the interval duration as needed (milliseconds)
     }
 
-    function updateDriverLocation(position) {
+    function updateDriverLocation(position, status) {
         startMarker.setPosition(position);
         map.panTo(position);
+        if (status == 'arrived') {
+            const heading = document.querySelector('.map-heading');
+            heading.innerHTML = 'The driver has arrived at your location';
+        } else if(status == 'destination') {
+            const heading = document.querySelector('.map-heading');
+            heading.innerHTML = 'You have arrived at your destination';
+        }
     }
 </script>
 
@@ -123,7 +136,20 @@
             <div class="driver-content">
                 <div class="chatButton" onclick="toggleChatPanel(true)">
                     <i class="fas fa-comments"></i>
+                <div class="chat-notification" style="display: none;"></div>
                 </div>
+                {% if user.role == 'driver' %}
+                <div class="driver-all-details">
+                    <div class="driver-image">
+                        {{customer.firstname[0].upper() + customer.lastname[0].upper()}}
+                    </div>
+                    <div class="driver-details">
+                        <div class="driver-name">
+                            {{customer.firstname}} {{customer.lastname}}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
             <div class="driver-all-details">
                 <div class="driver-image">
                     <img src="data:image/png;base64,{{ driver.profile_picture }}" alt="Profile Picture">
@@ -138,6 +164,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="ride-details">
             <div class="heading">
                 Ride Details
@@ -193,13 +220,13 @@
                         {{ form.hidden_tag() }}
                         <div class="numbers">
                             <input id="number1" maxlength="1" minlength="1" name="number1" required="" type="text"
-                                value="{{ride.ride_otp[0]}}">
+                                value="{{ride.ride_otp[0]}}" readonly>
                             <input id="number2" maxlength="1" minlength="1" name="number2" required="" type="text"
-                                value="{{ride.ride_otp[1]}}">
+                                value="{{ride.ride_otp[1]}}" readonly>
                             <input id="number3" maxlength="1" minlength="1" name="number3" required="" type="text"
-                                value="{{ride.ride_otp[2]}}">
+                                value="{{ride.ride_otp[2]}}" readonly>
                             <input id="number4" maxlength="1" minlength="1" name="number4" required="" type="text"
-                                value="{{ride.ride_otp[3]}}">
+                                value="{{ride.ride_otp[3]}}" readonly>
                         </div>
                     </form>
                     {% endif %}
@@ -238,7 +265,7 @@
                     <form class="send-message" onsubmit="event.preventDefault()">
                         {{ form.hidden_tag() }}
                         <input class="messageInput" type="text" name="message" placeholder="Type a message" />
-                        <button class="sendButton" onclick="playSendTone();handleChatMessageSend(document.getElementById('messageInput').value)"> Send</button>
+                        <button class="sendButton" onclick="playSendTone();handleChatMessageSend(document.querySelector('.messageInput').value)"> Send</button>
                     </form>
                 </div>
             </div>
@@ -275,6 +302,8 @@
         socket.on('receive_message', function (data) {
             console.log('Message received:', data.message, 'from', data.sender);
             const messageBox = document.querySelector('.chat-messages');
+            const chatNotification = document.querySelector('.chat-notification');
+            chatNotification.style.display = 'block';
             if (data.sender == '{{user.role}}')
             {
                 messageBox.innerHTML += `
@@ -313,7 +342,7 @@
 
         if('{{user.role}}' == 'customer'){
         socket.on('updated_driver_location', function (data) {
-            updateDriverLocation(data.location);
+            updateDriverLocation(data.location, data.status);
         });
     }
 
@@ -340,6 +369,8 @@
     function toggleChatPanel(bool) {
         const driverPanel = document.querySelector('.driver-content');
         const chatPanel = document.querySelector('.chat-content');
+        const chatNotification = document.querySelector('.chat-notification');
+        chatNotification.style.display = 'none';
 
         if(bool){
             driverPanel.style.display = 'none';
@@ -367,8 +398,7 @@
         }).then(response => response.json()).then(result => {
             console.log(result)
         })
-
-        
+        const messageField = document.querySelector('.messageInput');
 
         messageField.value = '';
         return true;
@@ -382,6 +412,26 @@
       var audio = new Audio("{{ url_for('static', filename='audio/receive.mp3') }}");
       audio.play();
     }
+
+    function handleInput(event) {
+        const input = event.target;
+        const value = input.value;
+        const key = event.target.key
+        console.log(key)
+    if (value.length === 0) {
+      // Move focus to the previous input field on backspace
+      var prevField = input.previousElementSibling;
+      if (prevField !== null) {
+        prevField.focus();
+      }
+    } else {
+      // Move focus to the next input field on input
+      var nextField = input.nextElementSibling;
+      if (nextField !== null) {
+        nextField.focus();
+      }
+    }
+  }
 </script>
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=initProjectedRide"></script>

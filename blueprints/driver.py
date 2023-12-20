@@ -15,11 +15,11 @@ driver_details = db['driver_details']
 
 @driver_blueprint.route('/register', methods=['POST'])
 def register():
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
-    password = request.form['password']
-    car_type = request.form['car_type']
+    first_name = session['signup_firstname']
+    last_name = session['signup_lastname']
+    email = session['signup_email']
+    password = session['signup_password']
+    car_type = session['signup_car']
     profile_picture = request.files['profile_picture']
     car_registration = request.files['car_registration']
     driver_license = request.files['driver_license']
@@ -29,9 +29,11 @@ def register():
         driver_id = add_user(first_name, last_name, email, password, 'driver')
         document_id = add_driver_files(driver_id, car_type ,driver_license, profile_picture, car_registration, bank_details)
         if driver_id and document_id:
-            return {'status': 'success'}
+            flash('Thank you for registering as a driver', 'success')
+            return redirect('/connection')
         else:
-            return {'status': 'error'}
+            flash('Registration not successful', 'error')
+            return redirect('/connection')
     except Exception as e:
         print("Error in /driver/register:", e)
         return {'status': 'error'}
@@ -47,5 +49,3 @@ def ride_accept(ride_id):
         print('could not get driver_current_location')
     result = driver_accept_ride(ride_id, current_user.id, driver_current_location)
     return result
-
-

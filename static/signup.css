@@ -64,6 +64,13 @@ body {
             margin: 10px;
             align-items: center;
 
+            .incorrect-password{
+                font-size: 15px;
+                color: red;
+                font-family: 'Onest';
+                display: none;
+            }
+
             .names {
                 display: flex;
                 flex-direction: row;

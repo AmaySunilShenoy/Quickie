@@ -36,6 +36,7 @@ def home():
         driver_car = get_specific_car(db,driver_details['car_type'])
         profile_picture = fs.get(driver_details['profile_picture_id']).read()
         encoded_profile_picture = base64.b64encode(profile_picture).decode('utf-8')
-        return render_template('homedriver.html',user=current_user,driver_details=driver_details, driver_car=driver_car, profile_picture=encoded_profile_picture)
+        current_user.profile_picture = encoded_profile_picture
+        return render_template('homedriver.html',user=current_user,driver_details=driver_details, driver_car=driver_car)
     else:
         return redirect('/')

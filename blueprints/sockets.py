@@ -71,7 +71,7 @@ def handle_ride_cancelled(data):
 @socketio.on('updated_driver_location', namespace='/sockets')
 def handle_updated_driver_location(data):
     room = f"ride_{data['ride_id']}"
-    emit('updated_driver_location', {'location': data['location']}, room=room)
+    emit('updated_driver_location', {'location': data['location'], 'status': data['status']}, room=room)
 
 
 @socketio.on('send_message', namespace='/sockets')

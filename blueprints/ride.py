@@ -1,4 +1,6 @@
 from datetime import datetime
+import bcrypt
+import hashlib
 from flask_pymongo import ObjectId
 from flask import Blueprint, render_template, request, redirect, flash, url_for, session
 from services.sqlite_functions import auth, add_user, existing_data, get_by_id
@@ -11,6 +13,7 @@ from services.general_functions import distance, generate_otp
 from services.ride_services import user_cancel_ride, get_ride_by_id,create_ride,driver_cancel_ride
 from services.car_services import get_specific_car, get_car_types
 from services.driver_services import get_driver_profile_picture, get_driver_details, get_driver
+from services.customer_services import get_customer
 from database.MongoDB.mongo import client
 
 ride_blueprint = Blueprint('ride', __name__)
@@ -63,7 +66,9 @@ def accepted(ride_id):
         ride = get_ride_by_id(ride_id)
         driver = get_driver(ride['driver'])
         messages = get_messages(ride['chat_id'])
-        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages)
+        customer = get_customer(ride['user'])
+
+        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages, customer = customer)
 
 @ride_blueprint.route('/create', methods=['POST'])
 @login_required

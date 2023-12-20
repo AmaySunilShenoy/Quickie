@@ -39,6 +39,22 @@ body {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        .customer-image{
+                width: 100px;
+                height: 100px;
+                background-color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 4px;
+                font-size: 14px;
+                font-weight: bold;
+                color: #000; /* Text color */
+                font-family: 'Onest';
+                margin-right: 15px;
+                    }
     
         .driver-image{
             & img{
@@ -88,6 +104,19 @@ body {
             color: white;
             font-family: 'Onest';
             font-size: 15px;
+
+            .chat-notification {
+                position: absolute;
+                right: -4px;
+                top: -4px;
+                width: 15px;
+                height: 15px;
+                background: #d11124;
+                border: 2px solid #000;
+                content: "";
+                border-radius: 50%;
+            }
+            
         }
 
         .backButton{

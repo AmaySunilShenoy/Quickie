@@ -237,6 +237,7 @@
 {% endblock %}
 
 {% block js %}
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const heading = document.querySelector(".header");
@@ -252,6 +253,30 @@
             rideCard.style.opacity = '1';
         }, 500);
     });
+
+    function getUserCurrentLocation(){
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const latlng = new google.maps.LatLng(lat, lng);
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[0]) {
+                        const address = results[0].formatted_address;
+                        document.querySelector('#from-input').value = address;
+                    }
+                }
+            });
+        }
+        
+    }
 
     let fromLocation = null
     let toLocation = null

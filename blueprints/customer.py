@@ -10,10 +10,10 @@ rides = db['rides']
 
 @customer_blueprint.route('/register', methods=['POST'])
 def register():
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
-    password = request.form['password']
+    first_name = session.get('signup_firstname')
+    last_name = session['signup_lastname']
+    email = session['signup_email']
+    password = session['signup_password']
     card_number = request.form['card_number']
     cvv = request.form['cvv']
     expiry_month = request.form['expiry_month']
@@ -22,9 +22,9 @@ def register():
 
     try:
         user_id = add_user(first_name, last_name, email, password, 'customer')
-        print(user_id)
         add_payment_method(user_id, card_number, cvv, expiration_date)
-        return {'status': 'success'}
+        flash('Thank you for registering as a customer', 'success')
+        return redirect('/connection')
     except Exception as e:
         print("Error in /customer/register:", e)
         return {'status': 'error'}

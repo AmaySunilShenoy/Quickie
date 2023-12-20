@@ -48,6 +48,13 @@ body {
             }
         }
 
+        .incorrect-password{
+            font-size: 15px;
+            color: red;
+            font-family: 'Onest';
+            display: none;
+        }
+
         & #password {
             height: 0px;
             width: 400px;

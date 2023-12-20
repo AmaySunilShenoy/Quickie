@@ -11,6 +11,23 @@
 
 {% block content %}
 <section class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for message in messages %}
+    {% if message[0] == 'error' %}
+    {% set message_type = 'danger' %}
+    {% else %}
+    {% set message_type = message[0] %}
+    {% endif %}
+    <div class="alert-div" style="display: flex;flex-direction: column;justify-content: center;width: 100%;z-index: 999;text-align: center;">
+        <div class="alert alert-{{ message_type }} alert-dismissible fade show" role="alert"
+            style="position: relative;width:100%;align-self: center;">
+            {{ message[1] }}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <div class="connection">
         <div class="header">
             <span class="create-header">Create an Account <span class="or-header">or</span></span>
@@ -19,9 +36,10 @@
         <div class="main-content">
 
             <form class="login-form" onsubmit="handleSubmit(event)">
-                <input type="email" placeholder="Enter your email address" name="email" />
+                <input type="email" placeholder="Enter your email address" name="email" required/>
                 <input type="hidden" placeholder="Enter your password" name="password" id="password"
-                    autocomplete="new-password" />
+                    autocomplete="new-password" required/>
+                <p class="incorrect-password">Your credentials are incorrect!</p>
                 <input type="submit" value="Continue" />
             </form>
             <div class="or">
@@ -73,6 +91,18 @@
 {% block js %}
 <script>
     console.log(window.innerWidth)
+
+    const alertDiv = document.querySelector('.alert-div')
+
+    function hideAlert(){
+        const alertDiv = document.querySelector('.alert-div')
+        alertDiv.style.display = 'none'
+    }
+
+    if(alertDiv){
+        setTimeout(hideAlert, 2000)
+    }
+    
     function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(document.querySelector('form'))
@@ -87,6 +117,12 @@
                     window.location.href = '/otp';
                 } else {
                     //  USER AUTH FAILS
+                    console.log("USER AUTH FAILS")
+                    const passwordInput = document.querySelector('#password')
+                    const incorrectPassword = document.querySelector('.incorrect-password')
+                    passwordInput.value = ''
+                    passwordInput.style.border = '2px solid red'
+                    incorrectPassword.style.display = 'block'
                 }
             })
         } else {

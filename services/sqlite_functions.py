@@ -1,6 +1,7 @@
 from flask import g
 import sqlite3
 import os
+import bcrypt
 from services.general_functions import generate_user_id
 
 def get_db():
@@ -39,22 +40,27 @@ def auth(email, password):
     db = get_db()
     cursor = db.cursor()
     cursor.execute(f'''
-        SELECT id, firstname, lastname, email, role FROM users WHERE email = ? AND password = ?
-    ''', (email, password))
-    data = cursor.fetchone()
+        SELECT id, firstname, lastname, email, password, role FROM users WHERE email = ?
+    ''', (email,))
+    data = list(cursor.fetchone())
     db.commit()
-    return data
+    if data:
+        db_password = data.pop(4)
+        if bcrypt.checkpw(password.encode('utf-8'), db_password):
+            return data
+        return None
+    return None
 
 def add_user(firstname,lastname,email,password, role):
     db = get_db()
     cursor = db.cursor()
     try:
         user_id = generate_user_id(email)
-        print('generated user id:',user_id)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         # Adding user
         cursor.execute('''
             INSERT INTO users (id,firstname,lastname,email,password, role) VALUES (?,?,?,?,?,?); 
-    ''', (user_id,firstname,lastname,email,password, role))
+    ''', (user_id,firstname,lastname,email,hashed_password, role))
         db.commit()
 
         return user_id
