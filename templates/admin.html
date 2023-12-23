@@ -1,0 +1,184 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/admin.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+
+<!-- Google maps autocompletion  -->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans+Text:500&amp;lang=en">
+{% endblock %}
+
+{% block title %} Quickie | Home {% endblock %}
+
+{% block content %}
+<div class="main">
+    <section class="left-panel">
+        <div class="items-list">
+            {% if section == 'drivers' %}
+            <div class="item performance" onclick="window.location.href= '/admin/performance' ">
+                <div class="text">
+                    Performance
+                </div>
+            </div>
+            <div class="item drivers active" onclick="window.location.href= '/admin/drivers'">
+                <div class="text">
+                    Driver Approvals
+                </div>
+            </div>
+            {% elif section == 'performance' %}
+            <div class="item performance active" onclick="window.location.href= '/admin/performance' ">
+                <div class="text">
+                    Performance
+                </div>
+            </div>
+            <div class="item drivers" onclick="window.location.href= '/admin/drivers'">
+                <div class="text">
+                    Driver Approvals
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    <section class="content">
+        {% if section == 'drivers' %}
+        <div class="heading">
+            <h1>Driver Application Requests</h1>
+        </div>
+        <div class="drivers">
+            {% for driver in drivers %}
+            <div class="driver-card">
+                <div class="driver-information">
+                    <div class="driver-details">
+                        <div class="driver-image">
+                            <img src="data:image/png;base64,{{driver.profile_picture}}" alt="driver-image">
+                        </div>
+                        <div class="driver-car">
+                            <img src="{{url_for('static', filename='images/cars/' + driver.car_type + '.png')}}" alt="{{driver.car_type}}" >
+                        </div>
+                        <div class="driver-name">
+                            {{driver.firstname}} {{driver.lastname}}
+                        </div>
+                    </div>
+                    <div class="driver-documents">
+                        <div class="document">
+                            <div class="document-name">
+                                Driver License
+                            </div>
+                            <a href="/admin/download/{{driver.id}}/driver_license" download>
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                        <div class="document">
+                            <div class="document-name">
+                                Car Registration
+                            </div>
+                            <a href="/admin/download/{{driver.id}}/car_registration" download>
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                        <div class="document">
+                            <div class="document-name">
+                                Bank Details
+                            </div>
+                            <a href="/admin/download/{{driver.id}}/bank_details" download>
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="driver-actions">
+                    <div class="approve action-button" onclick="handleApprove('{{driver.id}}')">
+                        Approve
+                    </div>
+                    <div class="reject action-button" onclick="handleReject('{{driver.id}}')">
+                        Reject
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif section == 'performance' %}
+        <div class="heading">
+            <h1>Performance Tracking</h1>
+        </div>
+
+        <div class="trackers">
+            <ul class="tracker-list">
+              <li class="tracker selected-option"  onclick="handleSelection(this,'routes')">
+                <div id="All" class="new">
+                  <span class="nav-item-text">Routes</span>
+                </div>
+              </li>
+              <li class="tracker" onclick="handleSelection(this,'logs')">
+                <div id="Pending Review" class="new" >
+                  <span class="nav-item-text">Logs</span>
+                </div>
+              </li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div class="route-content">
+                {% for route in routes %}
+                <div class="route-card">
+                    <div class="route-endpoint">
+                        <div class="route-heading">
+                            Endpoint
+                        </div>
+                        <div class="route-text">
+                            {{route.endpoint}}
+                        </div>
+                    </div>
+                    <div class="route-path">
+                        <div class="route-heading">
+                            Path
+                        </div>
+                        <div class="route-text">
+                            {{route.path}}
+                        </div>  
+                    </div>
+                    <div class="route-method">
+                        <div class="route-heading">
+                            Methods
+                        </div>
+                        <div class="route-text">
+                        {{route.methods}}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="log-content" style="display: none;">
+                {% for log in logs %}
+                <div class="text" style="font-family: 'Source Code Pro', monospace;">
+                    <div class="datetime" style="color:green">
+                        {{log.split(' - ')[0]}} -
+                    </div>
+                    <div class="type" style="color:blue">
+                        {{log.split(' - ')[1]}} -
+                    </div>
+                    <div class="message">
+                        {{log.split(' - ')[2]}} - {{log.split(' - ')[3][:-14]}}
+                    </div>
+                    <div class="time" style="color:darkblue;font-weight: bolder;">
+                        {{log.split(' - ')[3][-14:]}}
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+
+    
+        {% endif %}
+    </section>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for('static', filename='js/admin.js')}}"></script>
+{% endblock %}

@@ -3,7 +3,7 @@
 {% block head %}
 <!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
 <!-- <meta http-equiv="refresh" content="7"> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
 <script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
 
 <!-- Google maps autocompletion  -->
@@ -143,7 +143,7 @@
             <form onsubmit="event.preventDefault(); handleStep1Submit()">
                 <div class="from-to">
                     <div class="logo">
-                        <p class="quickie-logo">Quickie {{price}}</p>
+                        <p class="quickie-logo">Quickie</p>
                     </div>
                     <div class="from">
                         <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -154,7 +154,8 @@
                                 fill="currentColor"></path>
                         </svg>
                         <input type="text" name="from-location" placeholder="Enter location" id="from-input" />
-                        <i class="fa-solid fa-location-arrow fa-xl right-icon" title="Current Location" onclick="getUserCurrentLocation()"></i>
+                        <i class="fa-solid fa-location-arrow fa-xl right-icon" title="Current Location"
+                            onclick="getUserCurrentLocation()"></i>
                     </div>
                     <div class="connector"></div>
                     <div class="to">
@@ -172,11 +173,45 @@
                 </div>
             </form>
         </div>
+        <div class="time-card">
+            <form onsubmit="event.preventDefault();">
+                <div class="from-to">
+                    <div class="logo">
+                        <p class="quickie-logo">When do you want to travel?</p>
+                    </div>
+                    <div class="from">
+                        <svg class="left-icon calendar-icon" width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+                            <title>Calendar</title>
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M23 8V4h-3V1h-3v3H7V1H4v3H1v4h22Zm0 15H1V10h22v13ZM8 14H5v3h3v-3Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <input type="text" class="drop-down input-padding" id="datepicker" placeholder="Select Date"
+                            style="cursor: pointer;" onchange="checkDateValidity()" readonly />
+                        <i class="fa-solid fa-chevron-down drop-icon"></i>
+                    </div>
+
+
+                    <div class="to">
+                        <svg class="left-icon clock-icon" width="18px" height="18px" viewBox="0 0 24 24" fill="none">
+                            <title>Clock</title>
+                            <path d="M12 1C5.9 1 1 5.9 1 12s4.9 11 11 11 11-4.9 11-11S18.1 1 12 1Zm6 13h-8V4h3v7h5v3Z"
+                                fill="currentColor"></path>
+                        </svg>
+                        <div class="drop-down" onclick="toggleTimeDropdown()">
+                            <div class="text" id="selected-time">Now</div>
+                        </div>
+                        <div class="dropdown-content" id="time-dropdown-content"></div>
+                        <i class="fa-solid fa-chevron-down drop-icon"></i>
+                    </div>
+                </div>
+            </form>
+        </div>
     </section>
     <section class="step-2">
         <div class="header">
             <div class="header-text">
-                Where you heading?
+                Choose your ride
             </div>
         </div>
         <div class="ride-card">
@@ -209,7 +244,7 @@
                                     </div>
                                 </div>
                                 <div class="car-price">
-                                    
+
                                 </div>
                             </div>
                             {% endfor %}
@@ -225,6 +260,8 @@
                                 <input type="hidden" class="hiddenCar" name="car-name" value="">
                                 <input type="hidden" class="hiddenPrice" name="price" value="">
                                 <input type="hidden" class="hiddenDuration" name="duration" value="">
+                                <input type="hidden" class="hiddenTime" name="time" value="">
+                                <input type="hidden" class="hiddenDate" name="date" value="">
                             </div>
             </form>
         </div>
@@ -237,24 +274,34 @@
 {% endblock %}
 
 {% block js %}
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.en-GB.min.js"></script>
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<script src="{{ url_for('static', filename='js/datePicker.js') }}"></script>
 <script>
+
     document.addEventListener("DOMContentLoaded", () => {
         const heading = document.querySelector(".header");
         heading.style.opacity = '1';
         heading.style.transform = 'translateY(-20%)';
 
         const originalCarPrices = Array.from(document.querySelectorAll('.car-price')).map(element => {
-        return parseFloat(element.innerHTML);
-    });
+            return parseFloat(element.innerHTML);
+        });
 
         setTimeout(() => {
             const rideCard = document.querySelector(".ride-card");
             rideCard.style.opacity = '1';
         }, 500);
+
     });
 
-    function getUserCurrentLocation(){
+
+
+    function getUserCurrentLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
         } else {
@@ -275,8 +322,56 @@
                 }
             });
         }
-        
+
     }
+
+    function populateTimeDropdown() {
+        const dropdownContent = document.getElementById('time-dropdown-content');
+
+        // Set start and end times (adjust as needed)
+        const startTime = new Date();
+        startTime.setHours(0, 0, 0, 0); // 00:00:00
+        const endTime = new Date();
+        endTime.setHours(23, 50, 0, 0); // 23:50:00
+
+
+        const nowDiv = document.createElement('div')
+        nowDiv.className = 'time-option'
+        nowDiv.id = 'now'
+        nowDiv.textContent = 'Now'
+        nowDiv.onclick = () => selectTimeOption('Now');
+        dropdownContent.appendChild(nowDiv);
+
+
+        // Loop through times and add options to dropdown content
+        for (let time = new Date(startTime); time <= endTime; time.setMinutes(time.getMinutes() + 10)) {
+            const option = document.createElement('div');
+            option.className = 'time-option';
+            option.textContent = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            option.onclick = () => selectTimeOption(option.textContent);
+            dropdownContent.appendChild(option);
+        }
+    }
+
+    function selectTimeOption(selectedTime) {
+        document.getElementById('selected-time').textContent = selectedTime;
+        closeTimeDropdown();
+    }
+
+    function toggleTimeDropdown() {
+        const dropdownContent = document.querySelector('.dropdown-content');
+        dropdownContent.classList.toggle('show');
+        console.log('toggling dropdown')
+    }
+
+    function closeTimeDropdown() {
+        const dropdownContent = document.getElementById('time-dropdown-content');
+        console.log('closing dropdown')
+        dropdownContent.classList.remove('show');
+    }
+
+    // Call the function to populate the dropdown
+    populateTimeDropdown();
 
     let fromLocation = null
     let toLocation = null
@@ -307,9 +402,9 @@
             body: JSON.stringify(coordinates)
         }).then(res => res.json()).then(data => {
 
-            if(data.status != 'success'){
+            if (data.status != 'success') {
                 const confirm = window.confirm('This ride is very long and you have low chances of getting a driver. Do you still want to continue?')
-                if(!confirm){
+                if (!confirm) {
                     window.location.href = '/home'
                 }
             }
@@ -324,18 +419,26 @@
         })
 
         const requestRide = document.querySelector('.request-ride')
+        const timeCard = document.querySelector('.time-card')
         requestRide.style.opacity = 0
 
         const step1 = document.querySelector(".step-1");
         const step2 = document.querySelector(".step-2");
-        step1.style.transform = 'translate(-100%, -40%)';
+        step1.style.transform = 'translate(-100%, -6%)';
         step1.style.scale = '0.9';
 
         step2.style.transform = 'translateX(-40%)';
         step2.style.opacity = '1';
 
+        setTimeout(() => {
+            timeCard.style.height = '300px'
+        }, 500);
+
+        setTimeout(() => {
+            timeCard.style.opacity = '1'
+        }, 600);
         const step1heading = step1.querySelector(".header-text");
-        step1heading.innerHTML = 'Choose your ride'
+        step1heading.innerHTML = ''
 
     }
 
@@ -370,18 +473,27 @@
     function handleRequestRide() {
         if (selectedCar) {
             const carname = selectedCar.getAttribute('data-car-name')
+            const time = document.querySelector('#selected-time')
+            const dateValue = document.querySelector('#datepicker').value
             const hiddenCar = document.querySelector('.hiddenCar')
             const hiddenFrom = document.querySelector('.hiddenFrom')
             const hiddenTo = document.querySelector('.hiddenTo')
             const hiddenPrice = document.querySelector('.hiddenPrice')
             const hiddenDuration = document.querySelector('.hiddenDuration')
+            const hiddenTime = document.querySelector('.hiddenTime')
+            const hiddenDate = document.querySelector('.hiddenDate')
 
+            const dateObj = convertTextToDate(dateValue)
+            console.log('date is ', dateValue)
+            console.log('converted date is', dateObj)
 
             hiddenCar.value = carname
             hiddenFrom.value = fromLocation
             hiddenTo.value = toLocation
             hiddenPrice.value = parseInt(price.substring(1))
             hiddenDuration.value = duration
+            hiddenTime.value = time.textContent
+            hiddenDate.value = dateObj.toISOString()
 
             const form = document.querySelector('.requestForm')
 
@@ -394,7 +506,9 @@
     }
 </script>
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC" async defer></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC"
+    async defer></script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDE_00Ht-RtZVX21AL2a0JnIK2RatyL3E&callback=getGeoLocation&v=weekly"
     defer></script>

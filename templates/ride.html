@@ -3,7 +3,7 @@
 {% block head %}
 <!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
 <!-- <meta http-equiv="refresh" content="7"> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='ride.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/ride.css') }}">
 <script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
 <!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=console.debug&libraries=maps,marker&v=beta"> -->
 </script>
@@ -59,7 +59,7 @@
 {% block content %}
 <section class="main">
 
-    <section class="left-panel">
+    <section class="left-panel" style="justify-content: center;">
         <div class="ride-card">
             <form onsubmit="event.preventDefault(); handleCancelRide('{{ride._id}}')" method="POST">
                 <div class="from-to">
@@ -96,7 +96,7 @@
         <div class="chosen-car">
             <div class="car-card">
                 <div class="car-image">
-                    <img src="../static{{car.car_image_path}}" />
+                    <img src="{{ url_for('static', filename=car.car_image_path) }}" />
                 </div>
                 <div class="car-details">
                     <div class="car-text">
@@ -134,21 +134,37 @@
 {% endblock %}
 
 {% block js %}
+<script src="{{ url_for('static', filename='js/datePicker.js') }}"></script>
 <script>
     var socket;
 
-    document.addEventListener("DOMContentLoaded", () => {    
+    document.addEventListener("DOMContentLoaded", () => {
+        if('{{ride.status}}' === 'scheduled'){
+        const status = document.querySelector('.status');
+        const statusText = document.querySelector('.status-text');
+        const date = convertDateToText('{{ride.date}}');
+
+        statusText.innerHTML = `Your ride is scheduled for ${date} at {{ride.time}}.`;
+        status.style.left = '48%'
+        }
         socket = io.connect('http://' + document.domain + ':' + location.port + '/sockets');
 
     socket.on('connect', function() {
         console.log('Connected to server');
-        socket.emit('broadcast_ride_request', { 'ride_id': '{{ride._id}}' });
+        if('{{ride.status}}' === 'searching'){
+            socket.emit('broadcast_ride_request', { 'ride_id': '{{ride._id}}' });
+        }
 
         socket.on('ride_accepted_by_driver', function(data){
             console.log(data);
-            window.location.href = '/ride/accepted/{{ride._id}}';
+            window.location.href = '/ride/progress/{{ride._id}}';
         });
         })
+
+        socket.on('scheduled_ride_searching', function(data){
+            console.log(data);
+            window.location.href = '/ride/{{ride._id}}';
+        });
 
     });
 

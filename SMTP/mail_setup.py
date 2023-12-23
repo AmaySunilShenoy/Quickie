@@ -16,6 +16,3 @@ def init_mail(app):
     # app.config['MAIL_DEBUG'] = True
 
     mail.init_app(app)
-
-def send_email(subject, sender, recipients, text_body, html_body):
-    mail.send_message(subject, sender=sender, recipients=recipients, body=text_body, html=html_body)

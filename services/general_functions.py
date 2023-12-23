@@ -28,4 +28,29 @@ def distance(coord1, coord2):
     return distance
 
 
+def average_rating(ratings):
+    if len(ratings) == 0:
+        return 0
+    return sum(ratings)/len(ratings)
 
+
+def convert_to_24_hour_format(time):
+    hour = int(time[:2])
+    minute = int(time[3:5])
+    is_pm = time[-2:] == 'PM'
+    print('is_pm:', is_pm)
+
+    if is_pm and hour != 12:
+        hour += 12
+    elif not is_pm and hour == 12:
+        hour = 0
+
+    return hour, minute
+
+def convert_to_ymd(date):
+    year = int(date[:4])
+    month = int(date[5:7])
+    # Account for day difference due to ISO format
+    day = int(date[8:10]) + 1
+
+    return year, month, day

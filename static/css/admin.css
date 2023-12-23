@@ -1,0 +1,353 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 100vh;
+}
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px;
+    flex: 1;
+    height: 100%;
+    overflow-y: scroll;
+
+
+    .items-list {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+
+
+        .item {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            border-top: 1px solid #eae9e9;
+            border-bottom: 1px solid #eae9e9;
+
+            &:hover {
+                background-color: #f6f3f3;
+                cursor: pointer;
+            }
+        }
+
+
+
+        .active {
+            background-color: #e9e7e7 !important;
+            border-left: 4px solid black !important;
+        }
+    }
+}
+
+.content {
+    flex: 5;
+
+    .heading {
+        width: 100%;
+        text-align: center;
+        font-family: 'Gabarito';
+        font-size: 15px;
+        border-bottom: 2px solid black;
+        margin: 10px 0;
+
+    }
+
+    .drivers {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Onest';
+        font-size: 20px;
+        width: 100%;
+        height: 85vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+
+        .driver-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px #ccc;
+            font-family: 'Onest';
+            width: 100%;
+            min-height: fit-content;
+            font-size: 15px;
+            width: 90%;
+            margin: 15px 0;
+            align-items: center;
+
+
+            .driver-information {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin: 10px;
+                padding: 10px;
+                font-family: 'Gabarito';
+                font-size: 20px;
+                width: 80%;
+
+                .driver-details {
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    justify-content: flex-start;
+                    align-items: center;
+                    margin: 10px;
+                    padding: 10px;
+                    font-family: 'Gabarito';
+                    font-size: 20px;
+
+                    .driver-car {
+                        width: 250px;
+                        height: 250px;
+                        margin-left: 40px;
+
+                        & img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .driver-image {
+                        width: 100px;
+                        height: 100px;
+                        border-radius: 50%;
+                        background-color: #ccc;
+                        margin-right: 10px;
+                        position: absolute;
+                        top: 25%;
+                        left: 14%;
+                        z-index: 3;
+                        border: 4px solid rgb(238, 238, 238);
+
+                        & img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .driver-name {
+                        font-family: 'Gabarito';
+                        font-size: 20px;
+                        margin: 10px;
+                    }
+                }
+
+                .driver-documents {
+                    .document {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .document-name {
+                            font-family: 'Gabarito';
+                            font-size: 20px;
+                            margin: 10px;
+                        }
+
+
+
+                    }
+                }
+            }
+
+            .driver-actions {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-evenly;
+                align-items: center;
+                margin: 10px;
+                padding: 10px;
+                font-family: 'Gabarito';
+                font-size: 20px;
+                width: 100%;
+
+                .action-button {
+                    border: none;
+                    padding: 2px 20px;
+                    border-radius: 10px;
+                    background-color: black;
+                    color: white;
+                    font-family: 'Onest';
+                    cursor: pointer;
+                }
+
+                .approve {
+                    &:hover {
+                        scale: 1.02;
+                        background-color: green;
+                    }
+                }
+
+                .reject {
+                    &:hover {
+                        scale: 1.02;
+                        background-color: red;
+                    }
+                }
+            }
+
+        }
+    }
+
+    .trackers {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Onest';
+        font-size: 20px;
+        width: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        .tracker-list {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px;
+            padding: 10px;
+            width: 100%;
+
+
+            & li {
+                list-style: none;
+                margin: 10px;
+                padding: 10px;
+                font-family: 'Gabarito';
+                font-size: 20px;
+                text-align: center;
+                width: 65%;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px 0px #ccc;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+
+                & div {
+                    width: 100%;
+                }
+
+            }
+        }
+
+        .selected-option {
+            background-color: #000;
+            color: white;
+            scale: 1.02;
+        }
+    }
+
+    .content {
+
+        .route-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr 1fr;
+            grid-gap: 10px;
+            width: 100%;
+            height: 600px;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            overflow-y: scroll;
+            overflow-x: hidden;
+            font-size: 20px;
+
+            .route-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                margin: 10px;
+                padding: 10px;
+                font-family: 'Onest';
+                font-size: 20px;
+                width: 300px;
+                height: fit-content;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px 0px #ccc;
+                cursor: pointer;
+
+                .route-endpoint,.route-path,.route-method{
+                    width: 100%;
+                    
+                }
+                .route-heading {
+                    font-family: 'Gabarito';
+                    font-size: 20px;
+                    margin: 10px;
+                    width: 100%;
+                }
+
+                
+                .route-text{
+                    font-size: 15px;
+                    margin: 10px;
+
+                }
+
+            }
+        }
+
+        .log-content{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 10px;
+            padding: 10px;
+            font-family: 'Onest';
+            font-size: 18px;
+            width: 100%;
+            height: 500px;
+            background-color: #e9e7e7;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            .datetime, .type, .message, .time,.seconds{
+                display: inline;
+            }
+            }
+        }
+    }

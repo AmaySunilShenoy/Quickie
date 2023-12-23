@@ -3,6 +3,7 @@ import sqlite3
 import os
 import bcrypt
 from services.general_functions import generate_user_id
+from loggers.loggers import action_logger
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -62,7 +63,7 @@ def add_user(firstname,lastname,email,password, role):
             INSERT INTO users (id,firstname,lastname,email,password, role) VALUES (?,?,?,?,?,?); 
     ''', (user_id,firstname,lastname,email,hashed_password, role))
         db.commit()
-
+        action_logger.info(f'User {user_id} added to SQLite database')
         return user_id
     except:
         return False
@@ -90,3 +91,11 @@ def existing_data(column):
     print(data)
     existing = [el[0] for el in data]
     return existing
+
+
+
+# Admin functions
+def add_admin():
+    add_user('admin','admin', 'admin@quickie.com', 'admin', 'admin')
+    print('admin added')
+    

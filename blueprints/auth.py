@@ -1,36 +1,43 @@
-from flask import Blueprint, render_template, request, redirect, flash, url_for, session
-from flask_mail import Message
-from classes.form_templates import SignUpFormDriver, SignUpFormUser, LogInForm, OtpForm
-from services.sqlite_functions import auth, add_user, existing_data, get_by_id, check_user
-from flask_login import login_user, logout_user, login_required, LoginManager, current_user
+from flask import Blueprint, render_template, request, redirect, flash, session
+from classes.form_templates import SignUpFormDriver, SignUpFormUser, OtpForm
+from services.sqlite_functions import auth, check_user
+from flask_login import login_user, logout_user, current_user
 from classes.user_class import User
 from services.general_functions import generate_otp
 from services.car_services import get_car_types
 from services.mail_services import send_auth_otp
-from SMTP.mail_setup import mail
+from services.ride_services import get_ride_otp
+from loggers.loggers import performance_logger, action_logger
 from dotenv import load_dotenv
 from database.MongoDB.mongo import client
-import os
+import time
 
 load_dotenv()
-
-
 auth_blueprint = Blueprint('auth', __name__)
 db = client['Quickie']
 
 
+# Connection page to login or signup
 @auth_blueprint.route('/connection', methods=["GET"])
 def connection():
+
+    # Flask WTF forms
     driver_form=SignUpFormDriver
     user_form=SignUpFormUser
 
+    # If user is already logged in, redirect to home
     if not current_user.is_anonymous:
         return redirect('/home')
+    
+    # If user is not logged in, check if user has only otp vefication left
     elif session.get('authenticated_user'):
-        print('it is auth, sending to otp')
         return redirect('/otp')
+    
+    # else return connection page
     return render_template('connection.html',user_form=user_form, driver_form=driver_form)
 
+
+# JSON return for checking if user exists
 @auth_blueprint.route('/check', methods=["POST"])
 def check():
     email = request.form['email']
@@ -43,14 +50,22 @@ def check():
             session['signup_email'] = email
             return {'user':None}
     else:
-        print('no email found in /check')
         return {'user':None}
     
+
+# OTP verification page
 @auth_blueprint.route('/otp', methods=["GET", "POST"])
 def otp():
+
+    # Flask WTF form
     form = OtpForm()
-    user_email = session.get('authenticated_user')[3]
+
+    # Getting user email from session
+    user_email = session.get('authenticated_user')[3] if session.get('authenticated_user') else session.get('signup_email') 
     otp = session.get('otp')
+    start_time = time.time()
+
+    # If method is POST, check if OTP is correct
     if request.method == 'POST':
         if form.is_submitted() and form.validate():
             number1 = form.number1.data
@@ -58,28 +73,39 @@ def otp():
             number3 = form.number3.data
             number4 = form.number4.data
             user_input_otp = number1 + number2 + number3 + number4
-            print('user inputted:',user_input_otp, 'and correct is',otp)
+
+            action_logger.info(f'User {user_email} entered otp {user_input_otp}')
+
+            # If OTP is correct, log user in
             if user_input_otp == f'{otp}':
                 user = session.get('authenticated_user')
                 login_user(User(*user))        
                 session.pop('authenticated_user')
                 session.pop('otp')
+                end_time = time.time()
+
+                # Logging user action and performance
+                action_logger.info(f'User {user[0]} logged in after otp verification')
+                performance_logger.info(f'Route - /otp POST loaded in {(end_time - start_time) : .3f} seconds')
+
                 return redirect('/home')
             else:
-                print('incorrect otp')
-                flash('incorrect otp', 'danger')
+                flash('The OTP is incorrect', 'danger')
 
     if request.method == 'GET':
+
+        # If OTP is not generated, generate OTP and send email (this is to prevent many emails being sent on every GET request)
         if not otp:
             otp = generate_otp()
             print('otp is',otp)
             session['otp'] = otp
             try:
                 send_auth_otp(otp, user_email)
-                print('email sent without any error')
             except Exception as e:
                 print("Error while sending email: ",e)
-
+    
+    end_time = time.time()
+    performance_logger.info(f'Route - /otp GET loaded in {(end_time - start_time) : .3f} seconds')
     return render_template('otp.html', form=form, user_email=user_email)
     
 
@@ -103,9 +129,12 @@ def login():
 
 @auth_blueprint.route('/logout', methods=['POST','GET'])
 def logout():
+    action_logger.info(f'User {current_user.id} logged out')
     logout_user()
     return redirect('/')
 
+
+# Multipage signup and storing data in session
 @auth_blueprint.route('/signup', methods=['POST','GET'])
 def signup():
     if request.method == 'POST':

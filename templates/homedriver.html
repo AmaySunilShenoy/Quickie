@@ -3,7 +3,7 @@
 {% block head %}
 <!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
 <!-- <meta http-equiv="refresh" content="7"> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='driver.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/driver.css') }}">
 <script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
 <!-- <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=console.debug&libraries=maps,marker&v=beta"> -->
 </script>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="driver-rating">
                     <i class="fa-solid fa-star"></i>
-                    {{driver_details.rating}}
+                    {{driver_details.rating | round(2)}}
                 </div>
             </div>
         </div>
@@ -179,11 +179,6 @@
             console.log('Connected to server');
 
             socket.on('ride_request', function (data) {
-                // Handle the ride request, e.g., show a notification to the driver
-                console.log('Received ride request:', data.message);
-                console.log('from:', data.from_location)
-                console.log('to:', data.to_location)
-                console.log('price:', data.price)
 
                 const requestCard = document.querySelector('.driver-request-card');
                 console.log('ongoing request on screen?', requestCard.innerHTML !== '')
@@ -212,7 +207,11 @@
             socket.on('ride_request_cancelled', function (data) {
                 console.log(data.message);
                 const requestCard = document.querySelector('.driver-request-card');
-                const requestRideId = requestCard.querySelector('.ride-from-to-other').getAttribute('data-rideId');
+                const requestRide = requestCard.querySelector('.ride-from-to-other')
+                if(!requestRide){
+                   return
+                }
+                const requestRideId = requestRide.getAttribute('data-rideId');
                 console.log(requestRideId, data.ride_id)
                 if (requestRideId === data.ride_id) {
                     requestCard.innerHTML = ''
@@ -287,7 +286,7 @@
     function handleAcceptRideRequest(rideId) {
         const requestCard = document.querySelector('.driver-request-card');
 
-        fetch(`/driver/ride_accept/${rideId}`, {
+        fetch(`/ride/accept/${rideId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -298,9 +297,12 @@
         })
             .then(response => response.json())
             .then(result => {
+                if(result.status == 'success'){
                 socket.emit('ride_accepted', { 'message': 'Ride request accepted', 'ride_id': rideId, 'driver_id': '{{user.id}}' });
-                window.location.href = `/ride/accepted/${rideId}`
-
+                window.location.href = `/ride/progress/${rideId}`
+                } else {
+                    alert(result.message)
+                }
             })
     }
 

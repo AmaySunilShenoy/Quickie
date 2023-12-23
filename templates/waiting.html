@@ -1,0 +1,53 @@
+{% extends "basewelcome.html" %}
+
+{% block head %}
+<!-- REMOVE THIS META, ONLY FORT AUTO REFRESH -->
+<!-- <meta http-equiv="refresh" content="7"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+<script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+
+<!-- Google maps autocompletion  -->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans+Text:500&amp;lang=en">
+{% endblock %}
+
+{% block title %} Quickie | Home {% endblock %}
+
+{% block content %}
+<div class="main">
+    {% if driver_status == 'no' %}
+    <div class="waiting">
+        <div class="main-text">
+            Your account is being reviewed. <br>Please wait for the admin to approve your account. <br>
+        </div>
+        
+        <div class="sub">
+            You will be notified via email once your account is approved.
+        </div>
+    </div>
+    {% elif driver_status == 'rejected' %}
+    <div class="waiting">
+        <div class="main-text">
+            Unfortunately, your account has been rejected. <br>Please contact the admin for more information. <br>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const section = document.querySelector(`.{{section}}`)
+        const drivers = document.querySelector('.drivers')
+        const routes = document.querySelector('.routes')
+
+        console.log('removing classLists')
+
+        drivers.classList.remove('active');
+        routes.classList.remove('active');
+        section.classList.add('active');
+    });
+</script>
+{% endblock %}

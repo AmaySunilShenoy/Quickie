@@ -1,4 +1,3 @@
-from flask_pymongo import ObjectId
 
 # Car Database Functions
 def get_car_types(db):

@@ -1,88 +1,194 @@
 from datetime import datetime
-import bcrypt
-import hashlib
+import time
 from flask_pymongo import ObjectId
-from flask import Blueprint, render_template, request, redirect, flash, url_for, session
-from services.sqlite_functions import auth, add_user, existing_data, get_by_id
-from flask_login import login_user, logout_user, login_required, LoginManager, current_user
-from classes.user_class import User
+from flask import Blueprint, render_template, request, redirect, session
+from flask_login import login_required, current_user
+from apscheduler.schedulers.background import BackgroundScheduler
 from classes.form_templates import OtpForm
 from services.mail_services import send_ride_otp
 from services.chat_services import create_chat, get_messages
-from services.general_functions import distance, generate_otp
-from services.ride_services import user_cancel_ride, get_ride_by_id,create_ride,driver_cancel_ride
+from services.general_functions import distance, average_rating, convert_to_24_hour_format, convert_to_ymd
+from services.ride_services import user_cancel_ride, get_ride_by_id,create_ride,driver_cancel_ride, get_ride_otp, generate_ride_otp, schedule_ride_search
 from services.car_services import get_specific_car, get_car_types
-from services.driver_services import get_driver_profile_picture, get_driver_details, get_driver
+from services.driver_services import get_driver, driver_accept_ride, update_driver_rating
 from services.customer_services import get_customer
+from loggers.loggers import performance_logger, action_logger
 from database.MongoDB.mongo import client
 
 ride_blueprint = Blueprint('ride', __name__)
 db = client['Quickie']
 rides = db['rides']
+scheduler = BackgroundScheduler()
 
-@ride_blueprint.route('/<ride_id>', methods=["GET", "POST"])
-@login_required
-def start(ride_id):
-    try:
-        ride = get_ride_by_id(ride_id,current_user.id)
-        print('ride status:', ride['status'])
-        if ride['status'] == 'accepted':
-            return redirect(f'/ride/accepted/{ride_id}')
-        elif ride['status'] != 'cancelled':
-            return render_template('ride.html',user=current_user,car=get_specific_car(db,ride['car_name']), ride=ride)
+
+# Ride Middleware to check ride_id and if user is authorized to access the ride
+@ride_blueprint.before_request
+def before_request():
+    ride_id = request.view_args.get('ride_id')
+
+    if ride_id:
+        ride = get_ride_by_id(ride_id)
+        if ride:
+            if current_user.role == 'customer':
+                if ride['user'] != current_user.id:
+                    return redirect('/home')
+            elif current_user.role == 'driver':
+                if ride['driver'] != current_user.id:
+                    return redirect('/home')
+                
         else:
             return redirect('/home')
-    except Exception as e:
-        print(e)
-        return redirect('/home')
-    
-@ride_blueprint.route('/accepted/<ride_id>', methods=['GET'])
-@login_required
-def accepted(ride_id):
-    form = OtpForm()
-    print('role of user in accepted ride is ',current_user.role, current_user.email, current_user.firstname, current_user.lastname)
-    if current_user.role == 'customer':
-        if not session.get('ride_otp'):
-            print('generating ride otp')
-            ride_otp = generate_otp()
-            session['ride_otp'] = ride_otp
-            ride = get_ride_by_id(ride_id)
-            chat_id = create_chat(current_user.id, ride['driver'], ride_id)
+            
 
-            # TODO implement send_ride_otp(ride_otp, current_user.email, ride)
-            # send_ride_otp(ride_otp, current_user.email, ride)
-            rides.update_one({'_id':ObjectId(ride_id)}, {'$set':{'ride_otp':f'{ride_otp}','chat_id':f'{chat_id}', 'updated_at':datetime.now().strftime("%d/%m/%Y %H:%M:%S")}})
-        else:
-            print('ride-otp is',session.get('ride_otp'))
-
-        updated_ride = get_ride_by_id(ride_id)
-        messages = get_messages(updated_ride['chat_id'])
-        print('driver', updated_ride['driver'] )
-        driver = get_driver(updated_ride['driver'])
-
-        return render_template('ridestarted.html',user=current_user,driver=driver ,ride=updated_ride, form=form, messages=messages)
-    elif current_user.role == 'driver':
-        print('in driver')
-        ride = get_ride_by_id(ride_id)
-        driver = get_driver(ride['driver'])
-        messages = get_messages(ride['chat_id'])
-        customer = get_customer(ride['user'])
-
-        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages, customer = customer)
+# Create a ride
 
 @ride_blueprint.route('/create', methods=['POST'])
 @login_required
 def create():
+
+    # Getting form data
     from_location = request.form['from-location']
     to_location = request.form['to-location']
     car_name = request.form['car-name']
     price = request.form['price']
     duration = request.form['duration']
+    time = request.form['time']
+    date = request.form['date']
 
-    ride = {'user':current_user.id,'from_location':from_location, 'to_location':to_location, 'car_name':car_name, 'price':price,'duration':duration, 'status':'searching', 'driver':None,'driver_location':None ,'ride_otp': None, 'rating':None, 'review':None,'chat_id':None, 'created_at':datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'updated_at':datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
+    action_logger.info(f'User {current_user.id} created a ride from {from_location} to {to_location} at {time} on {date}')
+
+    status = 'searching' if time == 'Now' else 'scheduled'
+    ride = {'user':current_user.id,'from_location':from_location, 'to_location':to_location,'date':date ,'time':time,'car_name':car_name, 'price':price,'duration':duration, 'status':status, 'driver':None,'driver_location':None ,'ride_otp': None, 'rating':None, 'review':None,'chat_id':None, 'created_at':datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 'updated_at':datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
     ride_id = create_ride(ride)
+
+    if time != 'Now':
+        # Scheduling ride search using APScheduler
+        year,month,day = convert_to_ymd(date)
+        hour,minute = convert_to_24_hour_format(time)
+        ride_datetime = datetime(year,month,day,hour,minute)
+        scheduler.add_job(schedule_ride_search, 'date', run_date=ride_datetime, args=[ride_id], id=f'ride_{ride_id}')
+        
     return redirect(f'/ride/{ride_id}')
 
+
+# Getting a ride
+@ride_blueprint.route('/<ride_id>', methods=["GET", "POST"])
+@login_required
+def start(ride_id):
+    try:
+        start_time = time.time()
+        ride = get_ride_by_id(ride_id,current_user.id)
+        action_logger.info(f'User {current_user.id} accessed ride {ride_id}. Status of the ride is {ride["status"]}')
+
+        # If ride is already completed, redirect to review page
+        if ride['status'] == 'completed':
+            return redirect(f'/ride/review/{ride_id}')
+        # If ride is accepted, redirect to in progress page
+        elif ride['status'] == 'accepted':
+            return redirect(f'/ride/progress/{ride_id}')
+        # If ride is still searching, redirect to ride page
+        elif ride['status'] == 'searching':
+            return render_template('ride.html',user=current_user,car=get_specific_car(db,ride['car_name']), ride=ride)
+        
+    except Exception as e:
+        print(e)
+        return redirect('/home')
+    finally:
+        end_time = time.time()
+        performance_logger.info(f'Route - /ride/{ride_id} loaded in {(end_time - start_time) : .3f} seconds')
+    
+
+# Ride in progress
+@ride_blueprint.route('/progress/<ride_id>', methods=['GET'])
+@login_required
+def accepted(ride_id):
+    form = OtpForm()
+    ride = get_ride_by_id(ride_id)
+
+    # If ride is already completed, redirect to review page
+    if ride['status'] == 'completed':
+            return redirect(f'/ride/review/{ride_id}')
+    # If ride is still searching, redirect to ride page
+    elif ride['status'] == 'searching':
+        return redirect(f'/ride/{ride_id}')
+    
+    #  IF USER IS CUSTOMER
+    if current_user.role == 'customer':
+
+        # Ride OTP is generated only once and stored in session
+        if not session.get('ride_otp'):
+
+            # Generating ride OTP, creating a chat between the customer and driver and sending the OTP to the customer by email (but also viewable on the page)
+            ride_otp = generate_ride_otp(ride_id)
+            create_chat(current_user.id, ride['driver'], ride_id)
+            send_ride_otp(ride_otp, current_user.email, ride)
+
+        updated_ride = get_ride_by_id(ride_id)
+
+        # Getting already sent messages from the database and driver details
+        messages = get_messages(updated_ride['chat_id'])
+        driver = get_driver(updated_ride['driver'])
+
+        return render_template('ridestarted.html',user=current_user,driver=driver ,ride=updated_ride, form=form, messages=messages)
+    
+    # IF USER IS DRIVER
+    elif current_user.role == 'driver':
+        ride = get_ride_by_id(ride_id)
+        driver = get_driver(ride['driver'])
+        messages = get_messages(ride['chat_id'])
+        customer = get_customer(ride['user'])
+
+        if not driver:
+            return redirect('/home')
+
+        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages, customer = customer)
+
+
+# Ride review
+@ride_blueprint.route('/review/<ride_id>', methods=["GET", "POST"])
+@login_required
+def review(ride_id):
+
+    # Handling review form submission (rating of the driver from the user)
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            ratings = [int(data['comfortRating']), int(data['safetyRating']), int(data['quickRating'])]
+            rating = average_rating(ratings)
+            rides.update_one({"_id": ObjectId(ride_id)}, {"$set": {"rating": rating, "updated_at":datetime.now().strftime("%d/%m/%Y %H:%M:%S")}})
+            update_driver_rating(data['driver_id'])
+            return {'status': 'success'}
+        except Exception as e:
+            print(e)
+            return {'status': 'error'}
+            
+    
+    ride = get_ride_by_id(ride_id)
+    customer = get_customer(ride['user'])
+    driver = get_driver(ride['driver'])
+    if ride['status'] == 'completed':
+        return render_template('review.html',user=current_user,ride=ride, customer=customer, driver=driver)
+    else:
+        return redirect('/home')
+    
+
+# Ride OTP
+@ride_blueprint.route('/otp', methods=["POST"])
+@login_required
+def otp():
+    if request.method == 'POST':
+        data = request.json
+        user_ride_otp = data['otp']
+        ride_id = data['ride_id']
+        ride_otp = get_ride_otp(ride_id)
+        print('ride otp entered is ',ride_otp, ' and user entered is ',user_ride_otp)
+        if ride_otp == user_ride_otp:
+            return {'status':'success'}
+        else:
+            return {'status':'failed'}
+
+
+# Calculating ride price, distance and duration
 @ride_blueprint.route('/calculate', methods=['POST'])
 @login_required
 def calculate():
@@ -108,6 +214,30 @@ def calculate():
     return {'status': status,'distance':dist, 'car_prices': car_prices, 'duration':duration}
     
 
+# Accepting a ride
+@ride_blueprint.route('/accept/<ride_id>', methods=['POST'])
+@login_required
+def accept(ride_id):
+    try:
+        result = driver_accept_ride(ride_id, current_user.id, request.get_json()['current_location'])
+        return result
+    except Exception as e:
+        print(e)
+        return {'status': 'failure'}
+    
+
+# Starting a ride
+@ride_blueprint.route('/end/<ride_id>', methods=['POST'])
+@login_required
+def end(ride_id):
+    try:
+        result = rides.update_one({"_id": ObjectId(ride_id)}, {"$set": {"status": "completed", "updated_at":datetime.now().strftime("%d/%m/%Y %H:%M:%S")}})
+        return {'status': 'success'}
+    except Exception as e:
+        return {'status': 'error', 'error_type': e}
+
+
+# Cancelling a ride
 @ride_blueprint.route('/cancel/<ride_id>', methods=['POST'])
 @login_required
 def cancel(ride_id):

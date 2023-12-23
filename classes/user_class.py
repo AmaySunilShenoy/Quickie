@@ -7,7 +7,11 @@ class User(UserMixin):
          self.lastname = lastname
          self.email = email
          self.role = role
-         self.authenticated = False   
+         self.authenticated = False
+         self.profile_picture = None  
          
     def get_id(self):
          return self.id
+    
+    def set_profile_picture(self, profile_picture):
+        self.profile_picture = profile_picture

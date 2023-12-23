@@ -1,0 +1,403 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+
+/* Trip Section */
+
+
+.trip-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-family: 'Onest';
+    width: fit-content;
+    min-height: fit-content;
+    font-size: 15px;
+    width: 90%;
+    margin: 15px 0;
+
+
+    .trip-heading {
+        font-family: 'Montserrat';
+        font-size: 20px;
+        margin: 10px 0px;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.trip-image {
+    width: 100%;
+    height: 100px;
+    border-radius: 10px;
+    background-color: #ccc;
+
+    & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+}
+
+.trip-information {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 10px;
+    font-family: 'Gabarito';
+    font-size: 20px;
+
+    .trip-timings {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Onest';
+        font-size: 15px;
+
+        .trip-date,
+        .trip-time {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+
+            .heading {
+                font-family: 'Gabarito';
+                font-size: 15px;
+                border-bottom: 2px solid black;
+                margin-bottom: 5px;
+            }
+
+        }
+    }
+
+    .trip-from-to-map {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 10px;
+        padding: 10px;
+        font-family: 'Onest';
+        font-size: 15px;
+
+        .from-to {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .logo {
+                .quickie-logo {
+                    font-size: larger;
+                    font-weight: bold;
+                    font-family: 'Dosis';
+                }
+            }
+
+
+            .from,
+            .to {
+                position: relative;
+                width: fit-content;
+                height: fit-content;
+            }
+
+            .left-icon {
+                position: absolute;
+                left: 3%;
+                top: 35%;
+            }
+
+            .right-icon {
+                position: absolute;
+                right: 5%;
+                top: 50%;
+
+                &:hover {
+                    scale: 1.05;
+                }
+            }
+
+            .connector {
+                position: absolute;
+                border-left: 1px solid;
+                height: 50px;
+                z-index: 1;
+                top: 32%;
+                left: 3%
+            }
+
+            & input[type="text"] {
+                height: 20px;
+                width: 400px;
+                margin: 10px;
+                padding: 25px;
+                border-radius: 10px;
+                background-color: rgb(246, 246, 246);
+                border: 1px solid #ededed;
+                font-family: 'Onest';
+
+                &:focus {
+                    border: 2px solid black;
+                    outline: none;
+                    background-color: white;
+                }
+            }
+
+            .check-prices {
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+
+            & input[type="submit"] {
+                border: none;
+                padding: 10px 20px;
+                border-radius: 10px;
+                background-color: black;
+                color: white;
+                font-family: 'Onest';
+
+                &:hover {
+                    scale: 1.02;
+                }
+            }
+        }
+
+        .trip-map {
+            height: 270px;
+            width: 450px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px #ccc;
+            margin: 10px;
+            margin-right: 50px;
+        }
+    }
+
+    .trip-other-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .trip-price,
+        .trip-duration {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-family: 'Onest';
+            font-size: 15px;
+
+            .heading {
+                font-family: 'Gabarito';
+                font-size: 17px;
+                font-weight: bold;
+            }
+
+            .price,
+            .duration {
+                margin-left: 10px;
+                font-family: 'Rubik', sans-serif;
+                font-size: 17px;
+            }
+        }
+
+
+        .backButton {
+            width: 200px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+            cursor: pointer;
+            scale: 0.8;
+        }
+
+
+    }
+
+}
+
+.rating-information {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .rating-card {
+        width: fit-content;
+        box-shadow: 0px 0px 10px 0px #ccc;
+        padding: 15px;
+    }
+
+    .rating-submit {
+        display: flex;
+        margin: 15px 5px;
+        width: 90%;
+        justify-content: space-between;
+        align-items: center;
+
+    
+        .submitButton {
+            width: 150px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+            cursor: pointer;
+        }
+
+        .backButton {
+            width: 150px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            font-family: 'Onest';
+            cursor: pointer;
+
+        }
+
+    }
+
+
+
+    .driver-all-details {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20px;
+        text-align: center;
+
+        .driver-image {
+            margin-bottom: 20px;
+
+            & img {
+                height: 100px;
+                width: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .driver-name {
+            font-family: 'Onest';
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    }
+
+    .rating-categories {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        & td {
+            padding: 10px;
+        }
+
+        .rating-heading {
+            font-family: 'Gabarito';
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .comfort-rating:not(:checked)>input,
+        .safety-rating:not(:checked)>input,
+        .quick-rating:not(:checked)>input {
+            position: absolute;
+            appearance: none;
+        }
+
+        .comfort-rating:not(:checked)>label,
+        .safety-rating:not(:checked)>label,
+        .quick-rating:not(:checked)>label {
+            float: right;
+            cursor: pointer;
+            font-size: 30px;
+            fill: #666;
+        }
+
+        .comfort-rating:not(:checked)>label>svg,
+        .safety-rating:not(:checked)>label>svg,
+        .quick-rating:not(:checked)>label>svg {
+            fill: #666;
+            /* Set default color for SVG */
+            transition: fill 0.3s ease;
+            /* Add a transition effect */
+        }
+
+        .comfort-rating>input:checked+label:hover,
+        .comfort-rating>input:checked~label:hover,
+        .comfort-rating>input:checked~label:hover~label,
+        .comfort-rating>label:hover~input:checked~label {
+            fill: #ff9e0b;
+        }
+
+        .safety-rating>input:checked+label:hover,
+        .safety-rating>input:checked~label:hover,
+        .safety-rating>input:checked~label:hover~label,
+        .safety-rating>label:hover~input:checked~label {
+            fill: #ff9e0b;
+        }
+
+        .quick-rating>input:checked+label:hover,
+        .quick-rating>input:checked~label:hover,
+        .quick-rating>input:checked~label:hover~label,
+        .quick-rating>label:hover~input:checked~label {
+            fill: #ff9e0b;
+        }
+
+        .comfort-rating:not(:checked)>label:hover,
+        .comfort-rating:not(:checked)>label:hover~label,
+        .safety-rating:not(:checked)>label:hover,
+        .safety-rating:not(:checked)>label:hover~label,
+        .quick-rating:not(:checked)>label:hover,
+        .quick-rating:not(:checked)>label:hover~label {
+            fill: #ff9e0b;
+        }
+
+        .comfort-rating>input:checked~label>svg,
+        .comfort-rating>label:hover>svg,
+        .safety-rating>input:checked~label>svg,
+        .safety-rating>label:hover>svg,
+        .quick-rating>input:checked~label>svg,
+        .quick-rating>label:hover>svg {
+            fill: #ffa723;
+            /* Set color for selected stars */
+        }
+    }
+
+}
