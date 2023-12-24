@@ -1,24 +1,24 @@
-Quickie - A clone of Uber, the most popular ride sharing app 
-Quickie is a taxi service that allows customers to book rides with drivers on the app with ease.
+# Quickie - A clone of Uber, the most popular ride sharing app 
+ Quickie is a taxi service that allows customers to book rides with drivers on the app with ease.
 
 
 
-Getting Started
+## Getting Started
 
 
-Installation
+### Installation
     Install the necessary modules from the requirements.txt file located in the root of the app directory, using the command.
     
     > pip install -r requirements. txt
 
 
-Initiation
+### Initiation
     Run the app.py file in the top level of the directory and access the app on the port of the application (should be visible in the console).
     
     > py app.py
 
 
-Usage
+### Usage
 
 
     1. You will be greeted with the welcome page where you can connect to an account
