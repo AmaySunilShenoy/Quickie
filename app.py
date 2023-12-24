@@ -13,6 +13,7 @@ import logging
 from loggers.loggers import performance_logger
 from logging.handlers import RotatingFileHandler 
 from cache.cache_setup import init_cache
+from flask_babel import Babel, _
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
@@ -22,6 +23,10 @@ app.secret_key = os.getenv('SECRET_KEY')
 load_dotenv()
 init_mail(app)
 init_cache(app)
+babel = Babel(app)
+app.config['BABEL_DEFAULT_LOCALE'] = 'fr'
+app.config['LANGUAGES'] = ['en', 'fr', 'es']
+app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
 
 file_handler = RotatingFileHandler('app.log')
 file_handler.setLevel(logging.INFO)

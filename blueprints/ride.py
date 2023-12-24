@@ -14,13 +14,13 @@ from services.car_services import get_specific_car, get_car_types
 from services.driver_services import get_driver, driver_accept_ride, update_driver_rating
 from services.customer_services import get_customer
 from loggers.loggers import performance_logger, action_logger
+from cache.cache_setup import cache
 from database.MongoDB.mongo import client
 
 ride_blueprint = Blueprint('ride', __name__)
 db = client['Quickie']
 rides = db['rides']
 scheduler = BackgroundScheduler()
-
 load_dotenv()
 
 
@@ -38,6 +38,10 @@ def before_request():
             elif current_user.role == 'driver' and ride['status'] != 'searching':
                 if ride['driver'] != current_user.id:
                     return redirect('/home')
+
+            cache.set('ride_id', ride_id)
+            cache.set('customer', get_customer(ride['user']))
+            cache.set('driver', get_driver(ride['driver']))
                 
         else:
             return redirect('/home')
