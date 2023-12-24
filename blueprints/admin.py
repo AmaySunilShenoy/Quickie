@@ -13,6 +13,8 @@ rides = db['rides']
 # Admin Middleware
 @admin_blueprint.before_request
 def before_request():
+    if current_user.is_anonymous:
+        return redirect('/connection')
     if current_user.role != 'admin':
         return redirect('/home')
             

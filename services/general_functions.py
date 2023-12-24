@@ -37,7 +37,7 @@ def average_rating(ratings):
 def convert_to_24_hour_format(time):
     hour = int(time[:2])
     minute = int(time[3:5])
-    is_pm = time[-2:] == 'PM'
+    is_pm = time[-2:] == 'pm'
     print('is_pm:', is_pm)
 
     if is_pm and hour != 12:

@@ -179,7 +179,7 @@
                             </div>
                             <div class="driver-rating">
                                 <i class="fa-solid fa-star"></i>
-                                {{driver.rating}}
+                                {{driver.rating | round(2)}}
                             </div>
                         </div>
                     </div>
@@ -271,7 +271,7 @@
                 </div>
                 {% endif %}
                 {% if user.role == 'driver' %}
-                <div class="end-ride-card" style="display: block;">
+                <div class="end-ride-card">
                     <div class="heading">
                         Reached the destination?
                     </div>
@@ -344,6 +344,10 @@
 
     document.addEventListener("DOMContentLoaded", () => {
 
+        if('{{user.role}}' == 'driver' && '{{ride.status}}' == 'accepted'){
+            const endRideCard = document.querySelector('.end-ride-card');
+            endRideCard.style.display = 'none';   
+        }
 
         socket = io.connect('http://' + document.domain + ':' + location.port + '/sockets');
 
@@ -398,6 +402,8 @@
                 console.log('Ride started');
                 const otpCard = document.querySelector('.ride-otp-card');
                 otpCard.style.display = 'none';
+                const endRideCard = document.querySelector('.end-ride-card');
+                endRideCard.style.display = 'block';
                 initMap();
                 calculateAndDisplayRoute('{{ride.from_location}}', '{{ride.to_location}}', 'user-to-destination');
             }); 
@@ -571,6 +577,6 @@
     }
 </script>
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&callback=initProjectedRide"></script>
+    src="https://maps.googleapis.com/maps/api/js?key={{MAP_API_KEY}}&callback=initProjectedRide"></script>
 
 {% endblock %}

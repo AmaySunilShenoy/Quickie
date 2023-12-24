@@ -154,17 +154,8 @@
             <div class="log-content" style="display: none;">
                 {% for log in logs %}
                 <div class="text" style="font-family: 'Source Code Pro', monospace;">
-                    <div class="datetime" style="color:green">
-                        {{log.split(' - ')[0]}} -
-                    </div>
-                    <div class="type" style="color:blue">
-                        {{log.split(' - ')[1]}} -
-                    </div>
-                    <div class="message">
-                        {{log.split(' - ')[2]}} - {{log.split(' - ')[3][:-14]}}
-                    </div>
-                    <div class="time" style="color:darkblue;font-weight: bolder;">
-                        {{log.split(' - ')[3][-14:]}}
+                    <div class="text" style="font-family: 'Source Code Pro', monospace;">
+                        {{log}}
                     </div>
                 </div>
 

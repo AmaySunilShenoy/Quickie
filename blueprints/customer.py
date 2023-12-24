@@ -14,7 +14,7 @@ rides = db['rides']
 # Create
 @customer_blueprint.route('/register', methods=['POST'])
 def register():
-    start_time = time.time()
+    
     first_name = session.get('signup_firstname')
     last_name = session['signup_lastname']
     email = session['signup_email']
@@ -36,11 +36,10 @@ def register():
         session.pop('signup_lastname')
         session.pop('signup_email')
         session.pop('signup_password')
-        end_time = time.time()
+        
 
         # Logging
         action_logger.info(f'User {user_id} registered as a customer')
-        performance_logger.info(f'Route - /customer/register loaded in {(end_time - start_time) : .3f} seconds')
 
         # Flashing and redirecting
         flash('Thank you for registering as a customer', 'success')
@@ -55,12 +54,11 @@ def register():
 @customer_blueprint.route('/<customer_id>', methods=['GET'])
 @login_required
 def read(customer_id):
-    start_time = time.time()
+    
     try:
         customer = get_customer(customer_id)
         if customer:
-            end_time = time.time()
-            performance_logger.info(f'Route - /customer/{customer_id} loaded in {(end_time - start_time) : .3f} seconds')
+            
             return render_template('customer.html', customer=customer)
         else:
             flash('Customer not found', 'danger')

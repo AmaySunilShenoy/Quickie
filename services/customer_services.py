@@ -8,7 +8,8 @@ def get_customer(customer_id):
     customer_details = get_by_id(customer_id)
     customer = {
         'firstname': customer_details[1],
-        'lastname': customer_details[2]
+        'lastname': customer_details[2],
+        'email': customer_details[3],
     }
 
     return customer

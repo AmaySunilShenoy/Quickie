@@ -24,7 +24,7 @@
         <div class="profile">
           {% if user.role == 'driver' %}
           <div class="profile-picture">
-            <img src="data:image/png;base64,{{user.profile_picture}}" alt="profile-picture" style="object-fit: cover;height: 40px;width: 40px;border-radius: 50%;" />
+            <img src="data:image/png;base64,{{user.profile_picture or driver.profile_picture}}" alt="profile-picture" style="object-fit: cover;height: 40px;width: 40px;border-radius: 50%;" />
           </div>
           {% elif user.role == 'customer' %}
           <div class="profile-picture">

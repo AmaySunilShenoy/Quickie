@@ -1,24 +1,16 @@
-import logging
-from logging.handlers import RotatingFileHandler
+from logbook import Logger, FileHandler
+from logbook.compat import redirect_logging
 
-# Performance logger
-performance_logger = logging.getLogger('performance_logger')
-performance_handler = RotatingFileHandler('performance.log', maxBytes=10240, backupCount=10)
-performance_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-performance_logger.addHandler(performance_handler)
-performance_logger.setLevel(logging.INFO)
+redirect_logging()
 
-# General logger
-# general_logger = logging.getLogger('general_logger')
-# general_handler = RotatingFileHandler('app.log', maxBytes=10240, backupCount=10)
-# general_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-# general_logger.addHandler(general_handler)
-# general_logger.setLevel(logging.INFO)
+# Create logbook handlers with file locking
+action_log_handler = FileHandler('action.log', level='INFO', bubble=True, delay=True)
+performance_log_handler = FileHandler('performance.log', level='DEBUG', bubble=True, delay=True)
 
+# Create loggers
+action_logger = Logger('action')
+performance_logger = Logger('performance')
 
-# Action Logger
-action_logger = logging.getLogger('action_logger')
-action_handler = RotatingFileHandler('actions.log', maxBytes=10240, backupCount=10)
-action_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-action_logger.addHandler(action_handler)
-action_logger.setLevel(logging.INFO)
+# Add handlers to loggers
+action_logger.handlers.append(action_log_handler)
+performance_logger.handlers.append(performance_log_handler)

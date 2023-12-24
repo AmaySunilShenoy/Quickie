@@ -160,7 +160,7 @@
     }
 </script>
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&libraries=places,marker&callback=getDriverLocation&solution_channel=GMP_QB_addressselection_v2_cAC"
+    src="https://maps.googleapis.com/maps/api/js?key={{MAP_API_KEY}}&libraries=places,marker&callback=getDriverLocation&solution_channel=GMP_QB_addressselection_v2_cAC"
     async defer></script>
 
 <script>
@@ -208,8 +208,8 @@
                 console.log(data.message);
                 const requestCard = document.querySelector('.driver-request-card');
                 const requestRide = requestCard.querySelector('.ride-from-to-other')
-                if(!requestRide){
-                   return
+                if (!requestRide) {
+                    return
                 }
                 const requestRideId = requestRide.getAttribute('data-rideId');
                 console.log(requestRideId, data.ride_id)
@@ -237,39 +237,46 @@
                 <div class="heading">
                 Ride Request
             </div>
-            <div class="ride-from-to-other" data-rideId="${data.ride_id}">
-                <div class="ride-from-to">
-                    <div class="trip-from">
-                        <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            data-baseweb="icon">
-                            <title>From</title>
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
-                                fill="currentColor"></path>
-                        </svg>
-                        ${data.from_location}
-                    </div>
-                    <div class="connector"></div>
-                    <div class="trip-to">
-                        <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            data-baseweb="icon">
-                            <title>To</title>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
-                                fill="currentColor"></path>
-                        </svg>
-                        ${data.to_location}
-                    </div>
-                </div>
-                <div class="other">
-                    <div class="price">
-                        €${data.price}
-                    </div>
-                    <div class="duration">
-                        ${data.duration > 60 ? `${Math.floor(data.duration / 60)} hr ${(data.duration % 60)} mins` : `${data.duration} mins`}
-                    </div>
-                </div>
-            </div>
-            <div class="accept-reject">
+                    <div class="ride-from-to-other">
+                        <div class="from-to">
+                            <div class="from">
+                                <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    data-baseweb="icon">
+                                    <title>From</title>
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                <input type="text" name="from-location" value="${data.from_location}" id="from-input"
+                                    readonly />
+                            </div>
+                            <div class="connector"></div>
+                            <div class="to">
+                                <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    data-baseweb="icon">
+                                    <title>To</title>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                <input type="text" name="to-location" value="${data.to_location}" id="to-input"
+                                    readonly />
+                            </div>
+                        </div>
+                        <div class="other">
+                            <div class="price">
+                                € ${data.price}
+                            </div>
+                            <div class="duration">
+                                <div class="icon">
+                                    <img
+                                        src="//maps.gstatic.com/consumer/images/icons/1x/directions_car_grey800_24dp.png" />
+                                </div>
+                                <div class="text">
+                                    ${data.duration} mins
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accept-reject">
                 <div class="accept" onclick="handleAcceptRideRequest('${data.ride_id}')">
                     Accept
                 </div>
@@ -277,7 +284,8 @@
                     Reject
                 </div>
             </div>
-        </div>`
+                    </div>
+                </div>`
 
         requestCard.style.height = 'fit-content';
         requestCard.style.opacity = '1';
@@ -297,9 +305,9 @@
         })
             .then(response => response.json())
             .then(result => {
-                if(result.status == 'success'){
-                socket.emit('ride_accepted', { 'message': 'Ride request accepted', 'ride_id': rideId, 'driver_id': '{{user.id}}' });
-                window.location.href = `/ride/progress/${rideId}`
+                if (result.status == 'success') {
+                    socket.emit('ride_accepted', { 'message': 'Ride request accepted', 'ride_id': rideId, 'driver_id': '{{user.id}}' });
+                    window.location.href = `/ride/progress/${rideId}`
                 } else {
                     alert(result.message)
                 }
@@ -314,7 +322,7 @@
         resetMap()
 
         setTimeout(() => {
-            if(requests.length > 0){
+            if (requests.length > 0) {
                 const data = requests.shift()
                 handleRideRequest(data)
             }

@@ -17,23 +17,20 @@ def index():
 @profile_blueprint.route('/<section>', methods=['GET'])
 @login_required
 def profile_info(section):
-    start_time = time.time()
+    
     if section == 'trips':
         user_rides = rides.find({'user': current_user.id})
         user_rides = list(user_rides)
         for ride in user_rides:
             print(ride)
-        end_time = time.time()
-        performance_logger.info(f'Route - /profile/trips loaded in {(end_time - start_time) : .3f} seconds')
+        
         return render_template('profile.html', user=current_user, section=section, user_rides=user_rides)
     elif section == 'wallet':
         user_payment = get_payment_method(current_user.id)
-        end_time = time.time()
-        performance_logger.info(f'Route - /profile/wallet loaded in {(end_time - start_time) : .3f} seconds')
+        
         return render_template('profile.html', user=current_user, section=section, user_payment=user_payment)
     elif section == 'settings':
-        end_time = time.time()
-        performance_logger.info(f'Route - /profile/settings loaded in {(end_time - start_time) : .3f} seconds')
+        
         return render_template('profile.html', user=current_user)
     else:
         return redirect('/profile/trips')

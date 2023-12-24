@@ -104,7 +104,7 @@ def handle_updated_driver_location(data):
     # Handles updating driver location
     room = f"ride_{data['ride_id']}"
     emit('updated_driver_location', {'location': data['location'], 'status': data['status']}, room=room)
-    action_logger.info(f'SOCKETS : Driver {data["driver_id"]} updated location for ride {data["ride_id"]} to {data["location"]}')
+    action_logger.info(f'SOCKETS : Driver  updated location for ride {data["ride_id"]} to {data["location"]}')
 
 
 @socketio.on('send_message', namespace='/sockets')

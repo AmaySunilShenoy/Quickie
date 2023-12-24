@@ -17,7 +17,7 @@ driver_details = db['driver_details']
 # Create
 @driver_blueprint.route('/register', methods=['POST'])
 def register():
-    start_time = time.time()
+    
 
     # Get data from form and session (due to multi-page form)
     first_name = session['signup_firstname']
@@ -45,9 +45,8 @@ def register():
             session.pop('signup_email')
             session.pop('signup_password')
             session.pop('signup_car')
-            end_time = time.time()
+            
             action_logger.info(f'User {driver_id} registered as a driver')
-            performance_logger.info(f'Route - /driver/register loaded in {(end_time - start_time) : .3f} seconds')
             return redirect('/connection')
         else:
             flash('Registration not successful', 'error')
@@ -63,11 +62,10 @@ def register():
 @driver_blueprint.route('/<driver_id>', methods=['GET'])
 @login_required
 def read(driver_id):
-    start_time = time.time()
+    
     driver = get_driver(driver_id)
     if driver:
-        end_time = time.time()
-        performance_logger.info(f'Route - /driver/{driver_id} loaded in {(end_time - start_time) : .3f} seconds')
+        
         return {'driver': driver}
     else:
         return {'driver':None}

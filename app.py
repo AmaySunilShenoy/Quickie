@@ -1,7 +1,8 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+import time
+from flask import Flask, request, g
 from dotenv import load_dotenv
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager
 from blueprints import auth, views, profile, customer, ride, driver, chat, admin
 from services.sqlite_functions import get_by_id
 from classes.user_class import User
@@ -9,6 +10,7 @@ from SMTP.mail_setup import init_mail
 from blueprints.sockets import socketio
 from blueprints.ride import scheduler
 import logging
+from loggers.loggers import performance_logger
 from logging.handlers import RotatingFileHandler 
 from cache.cache_setup import init_cache
 app = Flask(__name__)
@@ -21,7 +23,7 @@ load_dotenv()
 init_mail(app)
 init_cache(app)
 
-file_handler = RotatingFileHandler('app_logs.log')
+file_handler = RotatingFileHandler('app.log')
 file_handler.setLevel(logging.INFO)
 # Create a formatter and set it for the FileHandler
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -30,6 +32,8 @@ file_handler.setFormatter(formatter)
 # Add the FileHandler to the general logger
 app.logger.addHandler(file_handler)
 
+
+# Logging before and after request details and Performance logging
 @app.before_request
 def log_request_info():
     if request.path != '/favicon.ico' and not request.path.startswith('/static'):
@@ -37,12 +41,15 @@ def log_request_info():
         app.logger.info('Request url : %s', request.url)
         app.logger.info('Request Headers : %s', dict(request.headers))
         app.logger.info('Request Data : %s', request.data)
+        g.start_time = time.time()
 
 @app.after_request
 def log_response_info(response):
     if request.path != '/favicon.ico' and not request.path.startswith('/static'):
         app.logger.info('Response Status: %s', response.status)
         app.logger.info('Request Headers : %s', dict(request.headers))
+        elapsed_time = time.time() - g.start_time
+        performance_logger.info(f'Route - {request.path} took {elapsed_time:.2f} seconds')
     return response
 
 # Login Manager

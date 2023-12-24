@@ -1,84 +1,33 @@
-2023-12-23 18:19:16,806 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 18:19:23,871 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:23:10,170 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:23:16,304 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:24:15,397 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:25:38,422 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:31:22,875 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:31:55,583 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:33:35,795 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:34:17,780 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 18:35:10,494 - INFO - Route - /admin/<section> loaded in  0.003 seconds
-2023-12-23 18:35:35,435 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:36:00,010 - INFO - Route - /admin/<section> loaded in  0.014 seconds
-2023-12-23 18:38:56,902 - INFO - Route - /admin/<section> loaded in  0.003 seconds
-2023-12-23 18:39:36,810 - INFO - Route - /admin/<section> loaded in  0.010 seconds
-2023-12-23 18:39:45,471 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:39:46,342 - INFO - Route - /admin/<section> loaded in  0.009 seconds
-2023-12-23 18:39:46,650 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 18:39:46,930 - INFO - Route - /admin/<section> loaded in  0.010 seconds
-2023-12-23 18:39:47,191 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:39:47,540 - INFO - Route - /admin/<section> loaded in  0.022 seconds
-2023-12-23 18:39:47,818 - INFO - Route - /admin/<section> loaded in  0.019 seconds
-2023-12-23 18:39:48,097 - INFO - Route - /admin/<section> loaded in  0.013 seconds
-2023-12-23 18:39:48,432 - INFO - Route - /admin/<section> loaded in  0.022 seconds
-2023-12-23 18:39:48,675 - INFO - Route - /admin/<section> loaded in  0.001 seconds
-2023-12-23 18:39:49,011 - INFO - Route - /admin/<section> loaded in  0.019 seconds
-2023-12-23 18:39:49,314 - INFO - Route - /admin/<section> loaded in  0.005 seconds
-2023-12-23 18:39:49,616 - INFO - Route - /admin/<section> loaded in  0.005 seconds
-2023-12-23 18:39:49,937 - INFO - Route - /admin/<section> loaded in  0.019 seconds
-2023-12-23 18:39:50,221 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 18:39:51,443 - INFO - Route - /admin/<section> loaded in  0.002 seconds
-2023-12-23 18:39:52,059 - INFO - Route - /admin/<section> loaded in  0.020 seconds
-2023-12-23 18:39:53,173 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 18:39:54,318 - INFO - Route - /admin/<section> loaded in  0.014 seconds
-2023-12-23 18:41:14,983 - INFO - Route - /admin/<section> loaded in  0.005 seconds
-2023-12-23 18:50:18,962 - INFO - Route - /admin/<section> loaded in  0.005 seconds
-2023-12-23 18:53:50,122 - INFO - Route - /admin/<section> loaded in  0.022 seconds
-2023-12-23 18:54:25,492 - INFO - Route - /admin/<section> loaded in  0.005 seconds
-2023-12-23 18:54:53,017 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 19:00:06,580 - INFO - Route - /admin/<section> loaded in  0.007 seconds
-2023-12-23 19:00:26,301 - INFO - Route - /admin/<section> loaded in  0.006 seconds
-2023-12-23 19:00:50,878 - INFO - Route - /admin/<section> loaded in  0.008 seconds
-2023-12-23 19:01:25,081 - INFO - Route - /admin/<section> loaded in  0.004 seconds
-2023-12-23 19:01:49,137 - INFO - Route - /admin/<section> loaded in  0.008 seconds
-2023-12-23 19:02:10,710 - INFO - Route - /admin/<section> loaded in  0.008 seconds
-2023-12-23 19:03:56,669 - INFO - Route - /admin/<section> loaded in  0.008 seconds
-2023-12-23 19:14:32,674 - INFO - Route - /otp GET loaded in  0.816 seconds
-2023-12-23 20:02:40,268 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 20:04:22,932 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 20:05:04,476 - INFO - Route - /otp GET loaded in  1.180 seconds
-2023-12-23 20:05:19,509 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:19,691 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:20,094 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:21,124 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:21,396 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:22,280 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:05:22,316 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:07:35,743 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:08:40,827 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:09:04,897 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:13:02,658 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 20:27:32,526 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 21:43:40,342 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 21:44:41,408 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 21:47:50,291 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 21:48:20,860 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 21:48:37,331 - INFO - Route - /otp POST loaded in  0.001 seconds
-2023-12-23 21:48:37,509 - INFO - Route - /ride/6585d46e488f61f42a75927f loaded in  0.072 seconds
-2023-12-23 21:48:58,014 - INFO - Route - /otp GET loaded in  1.095 seconds
-2023-12-23 21:50:39,270 - INFO - Route - /otp POST loaded in  0.001 seconds
-2023-12-23 21:50:59,232 - INFO - Route - /otp GET loaded in  1.451 seconds
-2023-12-23 21:58:26,743 - INFO - Route - /otp POST loaded in  0.002 seconds
-2023-12-23 21:58:45,386 - INFO - Route - /otp GET loaded in  0.844 seconds
-2023-12-23 23:03:08,899 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 23:03:17,332 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 23:03:50,776 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 23:04:12,383 - INFO - Route - /otp POST loaded in  0.001 seconds
-2023-12-23 23:04:37,794 - INFO - Route - /otp GET loaded in  0.814 seconds
-2023-12-23 23:04:40,664 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 23:04:47,312 - INFO - Route - /otp GET loaded in  0.000 seconds
-2023-12-23 23:13:47,660 - INFO - Route - /otp GET loaded in  0.001 seconds
-2023-12-23 23:14:12,038 - INFO - Route - /otp POST loaded in  0.001 seconds
-2023-12-23 23:55:21,042 - INFO - Route - /otp GET loaded in  0.827 seconds
-2023-12-23 23:55:30,490 - INFO - Route - /otp POST loaded in  0.001 seconds
+[2023-12-24 12:25:03.023082] INFO: performance: Route - /ride/review/65881f707d2a530a0586393b took 0.04 seconds
+[2023-12-24 12:25:44.937529] INFO: performance: Route - /ride/review/65881f707d2a530a0586393b took 0.03 seconds
+[2023-12-24 12:25:45.026789] INFO: performance: Route - /home took 0.03 seconds
+[2023-12-24 12:26:24.847679] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:26:36.911755] INFO: performance: Route - /ride/create took 0.01 seconds
+[2023-12-24 12:26:36.953720] INFO: performance: Route - /ride/6588237c4e0846172b307e45 took 0.02 seconds
+[2023-12-24 12:27:09.615707] INFO: performance: Route - /home took 0.07 seconds
+[2023-12-24 12:27:33.687759] INFO: performance: Route - /ride/cancel/6588237c4e0846172b307e45 took 0.01 seconds
+[2023-12-24 12:27:33.738977] INFO: performance: Route - /home took 0.01 seconds
+[2023-12-24 12:29:36.418473] INFO: performance: Route - /home took 0.10 seconds
+[2023-12-24 12:29:47.851537] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:31:15.744421] INFO: performance: Route - /home took 0.07 seconds
+[2023-12-24 12:31:18.037896] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:32:29.873415] INFO: performance: Route - /home took 0.01 seconds
+[2023-12-24 12:32:33.070776] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:33:09.669954] INFO: performance: Route - /home took 0.01 seconds
+[2023-12-24 12:33:12.257993] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:33:59.956441] INFO: performance: Route - /home took 0.01 seconds
+[2023-12-24 12:34:01.996141] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:34:53.060004] INFO: performance: Route - /home took 0.00 seconds
+[2023-12-24 12:34:55.114309] INFO: performance: Route - /ride/calculate took 0.00 seconds
+[2023-12-24 12:35:42.458324] INFO: performance: Route - /home took 0.01 seconds
+[2023-12-24 12:35:44.441002] INFO: performance: Route - /ride/calculate took 0.00 seconds
+[2023-12-24 12:41:01.684236] INFO: performance: Route - /home took 0.07 seconds
+[2023-12-24 12:41:04.022051] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:41:56.680390] INFO: performance: Route - /home took 0.06 seconds
+[2023-12-24 12:41:58.441622] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:52:06.260837] INFO: performance: Route - /home took 0.21 seconds
+[2023-12-24 12:56:30.013635] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:56:32.109623] INFO: performance: Route - /home took 0.03 seconds
+[2023-12-24 12:56:34.238137] INFO: performance: Route - /ride/calculate took 0.01 seconds
+[2023-12-24 12:56:37.396506] INFO: performance: Route - /ride/create took 0.01 seconds
+[2023-12-24 12:56:37.444605] INFO: performance: Route - /ride/65882a854c041b20334a3baf took 0.03 seconds

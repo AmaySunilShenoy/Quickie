@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash, session
+from flask import Blueprint, render_template, request, redirect, flash, session, g
 from classes.form_templates import SignUpFormDriver, SignUpFormUser, OtpForm
 from services.sqlite_functions import auth, check_user
 from flask_login import login_user, logout_user, current_user
@@ -15,6 +15,8 @@ import time
 load_dotenv()
 auth_blueprint = Blueprint('auth', __name__)
 db = client['Quickie']
+
+
 
 
 # Connection page to login or signup
@@ -63,7 +65,6 @@ def otp():
     # Getting user email from session
     user_email = session.get('authenticated_user')[3] if session.get('authenticated_user') else session.get('signup_email') 
     otp = session.get('otp')
-    start_time = time.time()
 
     # If method is POST, check if OTP is correct
     if request.method == 'POST':
@@ -82,12 +83,9 @@ def otp():
                 login_user(User(*user))        
                 session.pop('authenticated_user')
                 session.pop('otp')
-                end_time = time.time()
 
                 # Logging user action and performance
                 action_logger.info(f'User {user[0]} logged in after otp verification')
-                performance_logger.info(f'Route - /otp POST loaded in {(end_time - start_time) : .3f} seconds')
-
                 return redirect('/home')
             else:
                 flash('The OTP is incorrect', 'danger')
@@ -103,9 +101,7 @@ def otp():
                 send_auth_otp(otp, user_email)
             except Exception as e:
                 print("Error while sending email: ",e)
-    
-    end_time = time.time()
-    performance_logger.info(f'Route - /otp GET loaded in {(end_time - start_time) : .3f} seconds')
+    print('otp is s', otp)
     return render_template('otp.html', form=form, user_email=user_email)
     
 
@@ -129,7 +125,10 @@ def login():
 
 @auth_blueprint.route('/logout', methods=['POST','GET'])
 def logout():
-    action_logger.info(f'User {current_user.id} logged out')
+    if not current_user.is_anonymous:
+        action_logger.info(f'User {current_user.id} logged out')
+    else:
+        action_logger.info(f'User logged out')
     logout_user()
     return redirect('/')
 

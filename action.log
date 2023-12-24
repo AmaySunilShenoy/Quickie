@@ -1,0 +1,23 @@
+[2023-12-24 12:25:44.928802] INFO: action: Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 details updated
+[2023-12-24 12:25:44.929783] INFO: action: Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 rating updated
+[2023-12-24 12:26:36.906763] INFO: action: User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 created a ride from 131, Avenue de Flandre, Paris, IDF, 75019, France to 115 avenue de Paris, Versailles, France at Now on 2023-12-23T23:00:00.000Z
+[2023-12-24 12:26:36.908759] INFO: action: Ride 6588237c4e0846172b307e45 created
+[2023-12-24 12:26:36.940724] INFO: action: User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 accessed ride 6588237c4e0846172b307e45. Status of the ride is searching
+[2023-12-24 12:26:37.823005] INFO: action: SOCKETS : Customer 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 connected to sockets
+[2023-12-24 12:26:37.862011] INFO: action: SOCKETS : New ride request sent to drivers of QuickieX by User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824
+[2023-12-24 12:27:09.982467] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:27:33.663220] INFO: action: SOCKETS : User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 cancelled ride request 6588237c4e0846172b307e45
+[2023-12-24 12:27:33.682246] INFO: action: Ride 6588237c4e0846172b307e45 cancelled by user
+[2023-12-24 12:27:33.697958] INFO: action: SOCKETS : User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 disconnected from sockets
+[2023-12-24 12:27:57.670359] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:28:11.691392] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:48:11.641233] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:51:58.617720] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:52:06.019519] INFO: action: SOCKETS : User ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 disconnected from sockets
+[2023-12-24 12:52:07.066272] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:54:38.653473] INFO: action: SOCKETS : Driver ee9557bc117b3550f46d5d08adb6583c1d74f7639e0909aca0af4bc43a2d12e7 connected to sockets
+[2023-12-24 12:56:37.390356] INFO: action: User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 created a ride from 151 Av. de la République, 94800 Villejuif, France to 31, Avenue de l'Opéra, Paris, IDF, 75002, France at Now on 2023-12-23T23:00:00.000Z
+[2023-12-24 12:56:37.394370] INFO: action: Ride 65882a854c041b20334a3baf created
+[2023-12-24 12:56:37.421604] INFO: action: User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 accessed ride 65882a854c041b20334a3baf. Status of the ride is searching
+[2023-12-24 12:56:37.951759] INFO: action: SOCKETS : Customer 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824 connected to sockets
+[2023-12-24 12:56:38.006437] INFO: action: SOCKETS : New ride request sent to drivers of QuickieX by User 05e1c5da796eef4ecb95fa2519f449b25c28729c1ab136109953d7e2efd49824

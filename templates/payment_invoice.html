@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        .details {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Invoice</h1>
+        <p>Your Quickie ride details:</p>
+        
+        <div class="details">
+            <p><strong>Driver:</strong> {{ driver_name }}</p>
+            <p><strong>From Location:</strong> {{ from_location }}</p>
+            <p><strong>To Location:</strong> {{ to_location }}</p>
+            <p><strong>Total Charge:</strong> € {{ price }}</p>
+            <p><strong>Payment Card:</strong> **** **** **** {{ payment_method }}</p>
+        </div>
+
+        <p>Thank you for choosing Quickie!</p>
+
+        <div class="footer">
+            <p>This is an automated email from Quickie. Please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -297,6 +297,8 @@
             rideCard.style.opacity = '1';
         }, 500);
 
+        populateTimeDropdown('today');
+
     });
 
 
@@ -325,34 +327,6 @@
 
     }
 
-    function populateTimeDropdown() {
-        const dropdownContent = document.getElementById('time-dropdown-content');
-
-        // Set start and end times (adjust as needed)
-        const startTime = new Date();
-        startTime.setHours(0, 0, 0, 0); // 00:00:00
-        const endTime = new Date();
-        endTime.setHours(23, 50, 0, 0); // 23:50:00
-
-
-        const nowDiv = document.createElement('div')
-        nowDiv.className = 'time-option'
-        nowDiv.id = 'now'
-        nowDiv.textContent = 'Now'
-        nowDiv.onclick = () => selectTimeOption('Now');
-        dropdownContent.appendChild(nowDiv);
-
-
-        // Loop through times and add options to dropdown content
-        for (let time = new Date(startTime); time <= endTime; time.setMinutes(time.getMinutes() + 10)) {
-            const option = document.createElement('div');
-            option.className = 'time-option';
-            option.textContent = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            option.onclick = () => selectTimeOption(option.textContent);
-            dropdownContent.appendChild(option);
-        }
-    }
-
     function selectTimeOption(selectedTime) {
         document.getElementById('selected-time').textContent = selectedTime;
         closeTimeDropdown();
@@ -371,7 +345,6 @@
     }
 
     // Call the function to populate the dropdown
-    populateTimeDropdown();
 
     let fromLocation = null
     let toLocation = null
@@ -482,6 +455,11 @@
             const hiddenDuration = document.querySelector('.hiddenDuration')
             const hiddenTime = document.querySelector('.hiddenTime')
             const hiddenDate = document.querySelector('.hiddenDate')
+
+            if (!dateValue || time.textContent == '') {
+                alert('Please select a date and time')
+                return
+            }
 
             const dateObj = convertTextToDate(dateValue)
             console.log('date is ', dateValue)

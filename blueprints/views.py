@@ -1,13 +1,15 @@
 import base64
+import os
 from flask import Blueprint, render_template, redirect
 from flask_login import login_required, current_user
 from database.MongoDB.mongo import client
 from services.ride_services import get_latest_ride
 from services.car_services import get_car_types, get_specific_car
 from services.driver_services import is_driver_verified,  get_driver_details, fs
-
+from dotenv import load_dotenv
 views_blueprint = Blueprint('views', __name__)
 db = client['Quickie']
+load_dotenv()
 
 @views_blueprint.route('/')
 def welcome():
@@ -54,7 +56,7 @@ def home():
         profile_picture = fs.get(driver_details['profile_picture_id']).read()
         encoded_profile_picture = base64.b64encode(profile_picture).decode('utf-8')
         current_user.set_profile_picture(encoded_profile_picture)
-        return render_template('homedriver.html',user=current_user,driver_details=driver_details, driver_car=driver_car)
+        return render_template('homedriver.html',user=current_user,driver_details=driver_details, driver_car=driver_car, MAP_API_KEY=os.getenv('MAP_API_KEY'))
     else:
         return redirect('/')
     
