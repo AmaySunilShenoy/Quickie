@@ -14,7 +14,11 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="z-index: 999;">
+    {% if ride and ride.status != 'completed' and ride.status != 'scheduled' %}
+    <a class="navbar-brand" onclick="handleCancelRide('{{ride._id}}'); ">Quickie</a>
+    {% else %}
     <a class="navbar-brand" href="/home">Quickie</a>
+    {% endif %}
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -34,6 +38,40 @@
         <div class="sub-menu-wrap">
           <div class="sub-menu">
             <div class="items">
+              {% if ride and ride.status != 'completed' and ride.status != 'scheduled' %}
+              <div class="item" onclick="handleCancelRide('{{ride._id}}'); window.location.href='/profile/trips'">
+                <div class="icon">
+                  <i class="fa-solid fa-memory"></i>
+                </div>
+                <div class="text" >
+                  Trips
+                </div>
+              </div>
+              <div class="item" onclick="handleCancelRide('{{ride._id}}'); window.location.href = '/profile/wallet'">
+                <div class="icon">
+                  <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div class="text">
+                  Wallet
+                </div>
+              </div>
+              <div class="item" onclick="handleCancelRide('{{ride._id}}'); window.location.href = '/profile/settings'">
+                <div class="icon">
+                  <i class="fa-solid fa-gear"></i>
+                </div>
+                <div class="text">
+                  Settings
+                </div>
+              </div>
+              <div class="item" onclick="handleCancelRide('{{ride._id}}'); window.location.href = '/logout'">
+                <div class="icon">
+                  <i class="fa-solid fa-sign-out"></i>
+                </div>
+                <div class="text">
+                  Logout
+                </div>
+              </div>
+              {% else %}
               <div class="item" onclick="window.location.href = '/profile/trips'">
                 <div class="icon">
                   <i class="fa-solid fa-memory"></i>
@@ -66,6 +104,7 @@
                   Logout
                 </div>
               </div>
+              {% endif %}
             </div>
           </div>
         </div>

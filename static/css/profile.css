@@ -109,17 +109,16 @@ html, body{
         }
     }
 
-    .trip-information{
+    .trip-information {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        align-items: center;
         margin: 10px;
         padding: 10px;
         font-family: 'Gabarito';
         font-size: 20px;
-
-        .trip-timings{
+    
+        .trip-timings {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -129,48 +128,26 @@ html, body{
             padding: 10px;
             font-family: 'Onest';
             font-size: 15px;
-        }
-
-        .trip-from-to-map{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin: 10px;
-            padding: 10px;
-            font-family: 'Onest';
-            font-size: 15px;
-
-        .trip-from-to{
-            display: flex;
-            position: relative;
-            flex-direction: column;
-            width: 50%;
-            margin: 10px;
-            padding: 10px;
-            font-family: 'Onest';
-            font-size: 17px;
-
-
-            .connector{
-                position: absolute;
-                border-left: 1px solid;
-                height: 15px;
-                z-index: 1;
-                top: 40%;
-                left: 20px;
+    
+            .trip-date,
+            .trip-time {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                text-align: center;
+    
+                .heading {
+                    font-family: 'Gabarito';
+                    font-size: 15px;
+                    border-bottom: 2px solid black;
+                    margin-bottom: 5px;
+                }
+    
             }
-
         }
-
-        .trip-map{
-            height: 250px;
-            width: 250px;
-        }
-    }
-
-        .trip-price{
+    
+        .trip-from-to-map {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -178,10 +155,134 @@ html, body{
             width: 100%;
             margin: 10px;
             padding: 10px;
-            font-family: 'Rubik';
-            font-size: 20px;
-            font-weight: 5s00;
+            font-family: 'Onest';
+            font-size: 15px;
+    
+            .from-to {
+                position: relative;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+    
+                .logo {
+                    .quickie-logo {
+                        font-size: larger;
+                        font-weight: bold;
+                        font-family: 'Dosis';
+                    }
+                }
+    
+    
+                .from,
+                .to {
+                    position: relative;
+                    width: fit-content;
+                    height: fit-content;
+                }
+    
+                .left-icon {
+                    position: absolute;
+                    left: 3%;
+                    top: 35%;
+                }
+    
+                .right-icon {
+                    position: absolute;
+                    right: 5%;
+                    top: 50%;
+    
+                    &:hover {
+                        scale: 1.05;
+                    }
+                }
+    
+                .connector {
+                    position: absolute;
+                    border-left: 1px solid;
+                    height: 50px;
+                    z-index: 1;
+                    top: 32%;
+                    left: 5%
+                }
+    
+                & input[type="text"] {
+                    height: 20px;
+                    width: 400px;
+                    margin: 10px;
+                    padding: 25px;
+                    border-radius: 10px;
+                    background-color: rgb(246, 246, 246);
+                    border: 1px solid #ededed;
+                    font-family: 'Onest';
+    
+                    &:focus {
+                        border: 2px solid black;
+                        outline: none;
+                        background-color: white;
+                    }
+                }
+    
+                .check-prices {
+                    margin-top: 10px;
+                    margin-left: 10px;
+                }
+    
+                & input[type="submit"] {
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    background-color: black;
+                    color: white;
+                    font-family: 'Onest';
+    
+                    &:hover {
+                        scale: 1.02;
+                    }
+                }
+            }
+    
+            .trip-map {
+                height: 200px;
+                width: 300px;
+                border-radius: 10px;
+                box-shadow: 0px 0px 10px 0px #ccc;
+                margin: 10px;
+                margin-right: 50px;
+            }
         }
+    
+        .trip-other-button {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+    
+            .trip-price,
+            .trip-duration {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                font-family: 'Onest';
+                font-size: 15px;
+    
+                .heading {
+                    font-family: 'Gabarito';
+                    font-size: 17px;
+                    font-weight: bold;
+                }
+    
+                .price,
+                .duration {
+                    margin-left: 10px;
+                    font-family: 'Rubik', sans-serif;
+                    font-size: 17px;
+                }
+            }
+    
+    
+        }
+    
     }
 }
 

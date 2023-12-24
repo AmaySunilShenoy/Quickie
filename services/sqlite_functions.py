@@ -68,6 +68,33 @@ def add_user(firstname,lastname,email,password, role):
     except:
         return False
     
+def update_user(id, update_data):
+    firstname = update_data.get('firstname')
+    lastname = update_data.get('lastname')
+    email = update_data.get('email')
+    password = update_data.get('password')
+    role = update_data.get('role')
+    
+    db = get_db()
+    cursor = db.cursor()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    cursor.execute('''
+        UPDATE users SET firstname = ?, lastname = ?, email = ?, password = ?, role = ? WHERE id = ?;
+''', (firstname, lastname, email, hashed_password, role, id))
+    db.commit()
+    action_logger.info(f'User {id} updated in SQLite database')
+    return True
+
+def delete_user(id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('''
+        DELETE FROM users WHERE id = ?;
+''', (id,))
+    db.commit()
+    action_logger.info(f'User {id} deleted from SQLite database')
+    return True
+    
 def get_by_id(id):
     print(id)
     db = get_db()

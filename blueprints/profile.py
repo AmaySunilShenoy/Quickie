@@ -1,13 +1,16 @@
 from flask import Blueprint, render_template, redirect
 from flask_login import login_required, current_user
 from services.customer_services import get_payment_method
-import time
+import os
+from dotenv import load_dotenv
 from loggers.loggers import performance_logger
 from database.MongoDB.mongo import client
 
 profile_blueprint = Blueprint('profile', __name__)
 db = client['Quickie']
 rides = db['rides']
+
+load_dotenv()
 
 @profile_blueprint.route('/', methods=['GET'])
 @login_required
@@ -24,7 +27,7 @@ def profile_info(section):
         for ride in user_rides:
             print(ride)
         
-        return render_template('profile.html', user=current_user, section=section, user_rides=user_rides)
+        return render_template('profile.html', user=current_user, section=section, user_rides=user_rides, MAP_API_KEY=os.getenv('MAP_API_KEY'))
     elif section == 'wallet':
         user_payment = get_payment_method(current_user.id)
         

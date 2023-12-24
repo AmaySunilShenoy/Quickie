@@ -32,7 +32,7 @@ def home():
             return redirect(f'/ride/{latest_ride["_id"]}')
         
         # else return customer home page
-        return render_template('homecustomer.html',user=current_user, cars=cars, step=1)
+        return render_template('homecustomer.html',user=current_user, cars=cars, step=1,  MAP_API_KEY=os.getenv('MAP_API_KEY'))
     
     # Driver User is redirected to driver home page
     elif current_user.role == 'driver':

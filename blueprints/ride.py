@@ -88,6 +88,9 @@ def start(ride_id):
         # If ride is accepted, redirect to in progress page
         elif ride['status'] == 'accepted':
             return redirect(f'/ride/progress/{ride_id}')
+        # If ride is cancelled, redirect to home page
+        elif ride['status'] == 'cancelled':
+            return redirect('/home')
         # If ride is still searching, redirect to ride page
         
         return render_template('ride.html',user=current_user,car=get_specific_car(db,ride['car_name']), ride=ride, MAP_API_KEY=os.getenv('MAP_API_KEY'))
@@ -111,6 +114,10 @@ def accepted(ride_id):
     # If ride is still searching, redirect to ride page
     elif ride['status'] == 'searching':
         return redirect(f'/ride/{ride_id}')
+    
+    # If ride is cancelled, redirect to home page
+    elif ride['status'] == 'cancelled':
+            return redirect('/home')
     
     #  IF USER IS CUSTOMER
     if current_user.role == 'customer':
@@ -141,7 +148,7 @@ def accepted(ride_id):
         if not driver:
             return redirect('/home')
 
-        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages, customer = customer)
+        return render_template('ridestarted.html',user=current_user,ride=ride,driver=driver, form=form, messages=messages, customer = customer,MAP_API_KEY=os.getenv('MAP_API_KEY'))
 
 
 # Ride review

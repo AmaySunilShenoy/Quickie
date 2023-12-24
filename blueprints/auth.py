@@ -7,6 +7,7 @@ from services.general_functions import generate_otp
 from services.car_services import get_car_types
 from services.mail_services import send_auth_otp
 from services.ride_services import get_ride_otp
+from services.ride_services import get_latest_ride
 from loggers.loggers import performance_logger, action_logger
 from dotenv import load_dotenv
 from database.MongoDB.mongo import client
@@ -125,6 +126,12 @@ def login():
 
 @auth_blueprint.route('/logout', methods=['POST','GET'])
 def logout():
+    latest_ride = get_latest_ride(current_user.role,current_user.id)
+    print('latest ride during logout is', latest_ride)
+    if latest_ride and latest_ride['status'] not in ['completed', 'cancelled', 'scheduled']:
+        flash('You cannot logout while you have an ongoing ride. Please cancel the ride before you logout!', 'danger')
+        return redirect('/home')
+
     if not current_user.is_anonymous:
         action_logger.info(f'User {current_user.id} logged out')
     else:

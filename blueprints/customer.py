@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, flash, url_for, session
 from flask_login import login_required, current_user
-from services.sqlite_functions import add_user
+from services.sqlite_functions import add_user, update_user, delete_user
 from services.customer_services import get_customer,add_payment_method
 from loggers.loggers import performance_logger, action_logger
 from database.MongoDB.mongo import client
@@ -68,3 +68,31 @@ def read(customer_id):
         flash('An error occurred while retrieving customer', 'danger')
         action_logger.error(f'Error in /customer/<customer_id>: {e}')
         return redirect('/home')
+
+
+# Update
+@customer_blueprint.route('/update/<customer_id>', methods=['POST'])
+@login_required
+def update(customer_id):
+    update = request.get_json()
+    customer = get_customer(customer_id)
+    if customer:
+        return update_user(customer_id, update)
+    else:
+        return {'status': 'error', 'error_type': 'Customer not found'}
+    
+
+# Delete
+@customer_blueprint.route('/delete/<customer_id>', methods=['POST'])
+@login_required
+def delete(customer_id):
+    try:
+        result = delete_user(customer_id)
+        if result:
+            return {'status': 'success'}
+        else:
+            return {'status': 'error', 'error_type': 'Customer not found'}
+    except Exception as e:
+        print("Error in /customer/delete/<customer_id>:", e)
+        action_logger.error(f'Error in /customer/delete/<customer_id>: {e}')
+        return {'status': 'error', 'error_type': 'An error occurred while deleting customer'}

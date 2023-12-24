@@ -1,1 +1,5 @@
+# Ignore .env file in git
 .env
+
+# Ignoring log files
+*.log

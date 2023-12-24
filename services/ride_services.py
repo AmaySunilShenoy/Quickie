@@ -34,6 +34,8 @@ def get_ride_by_id(ride_id, user_id=None):
 
 def get_latest_ride(col,id):
     rides = db['rides']
+    if col == 'customer':
+        col = 'user'
     ride = rides.find_one({col:id}, sort=[('created_at', -1)])
     return ride
 

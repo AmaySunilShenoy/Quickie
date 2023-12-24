@@ -918,9 +918,11 @@ body {
     }
 
     .map {
-        height: 90vh;
+        height: 80vh;
         width: 800px;
         margin-top: 15px;
+        border-radius: 10px;
+        border-radius: 10px solid rgb(234, 234, 234);
     }
 
 }

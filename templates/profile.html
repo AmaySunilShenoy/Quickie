@@ -11,42 +11,46 @@
 <script>
     let map, directionsService, directionsRenderer;
 
-    function initProjectedRide() {
-        // Initialize the map
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 13
-        });
+    function initTripMap(mapId, start, end) {
+    // Initialize the map
+    console.log(mapId, start, end)
+    const mapElement = document.getElementById(`map-${mapId}`);
+    const map = new google.maps.Map(mapElement, {
+        zoom: 13
+    });
 
-        // Initialize the Directions service and renderer
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+    // Initialize the Directions service and renderer
+    const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
 
-        // Call the function to display the route
-        calculateAndDisplayRoute();
-    }
+    // Call the function to display the route
+    calculateAndDisplayRoute(directionsService, directionsRenderer, start, end);
+}
 
-    function calculateAndDisplayRoute() {
-        // Define the start and end points
-        const start = 'Place du Chatelet, Paris, France';
-        const end = 'Kremlin Bicêtre, France';
-
-        // Request directions from the Directions service
-        directionsService.route(
-            {
-                origin: start,
-                destination: end,
-                travelMode: 'DRIVING'
-            },
-            (response, status) => {
-                if (status === 'OK') {
-                    // Display the route on the map
-                    directionsRenderer.setDirections(response);
-                } else {
-                    window.alert('Directions request failed due to ' + status);
-                }
+function calculateAndDisplayRoute(directionsService, directionsRenderer, start, end) {
+    // Request directions from the Directions service
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+        },
+        (response, status) => {
+            if (status === 'OK') {
+                // Display the route on the map
+                directionsRenderer.setDirections(response);
+            } else {
+                window.alert('Directions request failed due to ' + status);
             }
-        );
-    }
+        }
+    );
+}
+function initProjectedRide(){
+    {% for ride in user_rides %}
+        initTripMap('{{ ride._id }}', '{{ ride.from_location }}', '{{ ride.to_location }}');
+    {% endfor %}
+}
+
 </script>
 
 
@@ -104,41 +108,69 @@
                 <div class="trip-information">
                     <div class="trip-timings">
                         <div class="trip-date">
-                            {{ride.updated_at[:10]}}
+                            <div class="heading">
+                                Date
+                            </div>
+                            <div class="date">
+                                {{ride.updated_at[:10]}}
+                            </div>
                         </div>
                         <div class="trip-time">
-                            {{ride.updated_at[11:16]}}
+                            <div class="heading">
+                                Time
+                            </div>
+                            <div class="time">
+                                {{ride.updated_at[11:13] + 'h' + ride.updated_at[14:16]}}
+                            </div>
                         </div>
                     </div>
                     <div class="trip-from-to-map">
-                        <div class="trip-from-to">
-                            <div class="trip-from">
+                        <div class="from-to">
+                            <div class="from">
                                 <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                data-baseweb="icon">
-                                <title>From</title>
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
-                                    fill="currentColor"></path>
-                            </svg>
-                               {{ride.from_location}}
+                                    data-baseweb="icon">
+                                    <title>From</title>
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                <input type="text" name="from-location" value="{{ride.from_location}}" id="from-input"
+                                    readonly />
                             </div>
                             <div class="connector"></div>
-                            <div class="trip-to">
+                            <div class="to">
                                 <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                data-baseweb="icon">
-                                <title>To</title>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
-                                    fill="currentColor"></path>
-                            </svg>
-                                {{ride.to_location}}
+                                    data-baseweb="icon">
+                                    <title>To</title>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                                <input type="text" name="to-location" value="{{ride.to_location}}" id="to-input" readonly />
                             </div>
                         </div>
-                        <div class="trip-map" id="map">
-
+                        <div class="trip-map" id="map-{{ride._id}}">
+        
                         </div>
                     </div>
-                    <div class="trip-price">
-                        {{ride.price}}
+                    <div class="trip-other-button">
+                        <div class="trip-other">
+                            <div class="trip-price">
+                                <div class="heading">
+                                    Trip Cost:
+                                </div>
+                                <div class="price">
+                                    €{{ride.price}}
+                                </div>
+                            </div>
+                            <div class="trip-duration">
+                                <div class="heading">
+                                    Trip Duration:
+                                </div>
+                                <div class="duration">
+                                    {{ride.duration}} minutes
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

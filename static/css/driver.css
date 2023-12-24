@@ -472,9 +472,11 @@ body {
 }
 
 .map{
-    height: 90vh;
+    height: 80vh;
     width: 800px;
-    margin-top: 15px;
+    margin-top: 50px;
+    border-radius: 20px;
+    border: 10px solid rgb(234, 234, 234);
 }
 
 .status{
