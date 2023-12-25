@@ -478,6 +478,22 @@ body {
         justify-content: space-between;
         width: 1000px;
         height: 300px;
+        input[type="file"] {
+            display: none;
+        }
+
+
+        .document-title{
+            font-size: 30px;
+            font-family: 'Gabarito';
+            margin: 10px;
+        }
+
+        .document-upload{
+            font-size: 20px;
+            font-family: 'Onest';
+            margin:10px;
+        }
 
         .profile-picture{
             #imageUpload {
