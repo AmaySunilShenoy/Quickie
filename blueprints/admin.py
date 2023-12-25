@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, send_file
+from flask import Blueprint, render_template, request, redirect, send_file, jsonify
 from flask_login import current_user
 from services.driver_services import get_unverified_drivers, get_driver_document, approve_driver, reject_driver
 from services.performance_services import route_list, get_performance_content
@@ -10,17 +10,6 @@ db = client['Quickie']
 rides = db['rides']
 
 
-# Admin Middleware
-@admin_blueprint.before_request
-def before_request():
-    if current_user.is_anonymous:
-        return redirect('/connection')
-    if current_user.role != 'admin':
-        return redirect('/home')
-            
-    if request.path != '/admin/performance' and request.path != '/admin/drivers':
-        return redirect('/admin/performance')
-    
 
 # Redirecting to admin dashboard
 @admin_blueprint.route('/', methods=['GET'])
@@ -42,7 +31,6 @@ def information(section):
             cache.set('routes',routes)
 
         performance_content = get_performance_content()
-        print(performance_content)
     return render_template('admin.html', user=current_user, routes=routes, section=section, logs=performance_content)
 
 
@@ -54,15 +42,13 @@ def download(driver_id,document_name):
 
 
 # Approving a driver
-@admin_blueprint.route('/approve/<driver_id>', methods=['POST'])
+@admin_blueprint.route('/approve/<driver_id>', methods=['POST', 'GET'])
 def approve(driver_id):
     result = approve_driver(driver_id)
-    print('result is', result)
-    return result
+    return jsonify(result)
 
 # Rejecting a driver
 @admin_blueprint.route('/reject/<driver_id>', methods=['POST'])
 def reject(driver_id):
     result = reject_driver(driver_id)
-    print('result is', result)
-    return result
+    return jsonify(result)

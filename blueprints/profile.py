@@ -34,6 +34,6 @@ def profile_info(section):
         return render_template('profile.html', user=current_user, section=section, user_payment=user_payment)
     elif section == 'settings':
         
-        return render_template('profile.html', user=current_user)
+        return render_template('profile.html', user=current_user, section=section)
     else:
         return redirect('/profile/trips')

@@ -146,7 +146,8 @@
         statusText.innerHTML = `Your ride is scheduled for ${date} at {{ride.time}}.`;
         status.style.left = '48%'
         }
-        socket = io.connect('http://' + document.domain + ':' + location.port + '/sockets');
+
+    socket = io.connect('http://' + document.domain + ':' + location.port + '/sockets');
 
     socket.on('connect', function() {
         console.log('Connected to server');

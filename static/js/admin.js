@@ -29,6 +29,8 @@ function handleApprove(id) {
             console.log(result)
             if(result.status == 'success'){
                 window.location.href = '/admin/drivers';
+            } else {
+                alert('Something went wrong. Please try again later.')
             }
         });
 }

@@ -179,19 +179,6 @@ function initProjectedRide(){
         </div>
         {% elif section == 'wallet' %}
         <div class="wallet">
-            <!-- <div class="wallet-cash">
-                <div class="main-heading">
-                    Cash
-                </div>
-                <div class="wallet-card">
-                    <div class="heading">
-                        Quickie Cash
-                    </div>
-                    <div class="amount">
-                        €12.89
-                    </div>
-                </div>
-            </div> -->
             <div class="main-heading">
                 Payment Methods
             </div>
@@ -205,14 +192,9 @@ function initProjectedRide(){
                         **** **** **** {{user_payment.card_number[12:16]}}
                     </div>
                 </div>
-                <div class="add-card">
-                    <div class="add">
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
-                </div>
             </div>
         </div>
-        {% else %}
+        {% elif section == 'settings' %}
         <div class="settings">
             <div class="main-heading">
                 Profile Settings

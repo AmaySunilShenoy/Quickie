@@ -66,7 +66,6 @@ login_manager.init_app(app)
 def load_user(user_id):
     user = get_by_id(user_id)
     if user:
-        print(*user)
         return User(*user)
     else:
         pass

@@ -17,7 +17,6 @@ def welcome():
     if request.method == 'POST':
         from_location = request.form.get('from-location')
         to_location = request.form.get('to-location')
-        print(from_location, to_location)
         if from_location and to_location:
             session['init_from_location'] = from_location
             session['init_to_location'] = to_location

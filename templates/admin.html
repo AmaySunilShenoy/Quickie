@@ -56,7 +56,7 @@
                             <img src="data:image/png;base64,{{driver.profile_picture}}" alt="driver-image">
                         </div>
                         <div class="driver-car">
-                            <img src="{{url_for('static', filename='images/cars/' + driver.car_type + '.png')}}" alt="{{driver.car_type}}" >
+                            <img src="{{url_for('static', filename='images/cars/' + driver.car_type.replace(' ', '') + '.png')}}" alt="{{driver.car_type}}" >
                         </div>
                         <div class="driver-name">
                             {{driver.firstname}} {{driver.lastname}}
@@ -67,7 +67,7 @@
                             <div class="document-name">
                                 Driver License
                             </div>
-                            <a href="/admin/download/{{driver.id}}/driver_license" download>
+                            <a href="/admin/download/{{driver.id}}/driver_license">
                                 <i class="fas fa-download"></i>
                             </a>
                         </div>
