@@ -38,11 +38,6 @@ def before_request():
             elif current_user.role == 'driver' and ride['status'] != 'searching':
                 if ride['driver'] != current_user.id:
                     return redirect('/home')
-
-            cache.set('ride_id', ride_id)
-            cache.set('customer', get_customer(ride['user']))
-            cache.set('driver', get_driver(ride['driver']))
-                
         else:
             return redirect('/home')
             

@@ -24,7 +24,7 @@ load_dotenv()
 init_mail(app)
 init_cache(app)
 babel = Babel(app)
-app.config['BABEL_DEFAULT_LOCALE'] = 'fr'
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
 app.config['LANGUAGES'] = ['en', 'fr', 'es']
 app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
 

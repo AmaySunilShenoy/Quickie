@@ -299,6 +299,12 @@
 
         populateTimeDropdown('today');
 
+        if('{{init_from_location}}' != '' && '{{init_to_location}}' != '') {
+            document.querySelector('#from-input').value = '{{init_from_location}}'
+            document.querySelector('#to-input').value = '{{init_to_location}}'
+            handleStep1Submit()
+        }
+
     });
 
 
@@ -485,10 +491,7 @@
 </script>
 </script>
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCIJQqRBODWBiRFVNN8_QuniKcMnawuoQ&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC"
+    src="https://maps.googleapis.com/maps/api/js?key={{MAP_API_KEY}}&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC"
     async defer></script>
-<script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDE_00Ht-RtZVX21AL2a0JnIK2RatyL3E&callback=getGeoLocation&v=weekly"
-    defer></script>
 
 {% endblock %}

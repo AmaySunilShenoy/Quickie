@@ -230,9 +230,11 @@
                                 </div>
                             </div>
                         </div>
+                        {% if ride.status != 'started' %}
                         <div class="cancel-ride" onclick="handleCancelRide('{{ride._id}}')">
                             <input class="cancel-button" type="submit" name="submit" value="Cancel Ride" />
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -403,7 +405,10 @@
                 const otpCard = document.querySelector('.ride-otp-card');
                 otpCard.style.display = 'none';
                 const endRideCard = document.querySelector('.end-ride-card');
-                endRideCard.style.display = 'block';
+                endRideCard.style.display = 'flex';
+
+                const cancelButton = document.querySelector('.cancel-ride');
+                cancelButton.style.display = 'none';
                 initMap();
                 calculateAndDisplayRoute('{{ride.from_location}}', '{{ride.to_location}}', 'user-to-destination');
             }); 

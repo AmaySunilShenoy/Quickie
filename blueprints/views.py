@@ -1,6 +1,6 @@
 import base64
 import os
-from flask import Blueprint, render_template, redirect
+from flask import Blueprint, render_template, redirect, request, session
 from flask_login import login_required, current_user
 from database.MongoDB.mongo import client
 from services.ride_services import get_latest_ride
@@ -11,9 +11,18 @@ views_blueprint = Blueprint('views', __name__)
 db = client['Quickie']
 load_dotenv()
 
-@views_blueprint.route('/')
+@views_blueprint.route('/', methods=["GET", "POST"])
 def welcome():
-    return render_template('index.html')
+    MAP_API_KEY = os.getenv('MAP_API_KEY')
+    if request.method == 'POST':
+        from_location = request.form.get('from-location')
+        to_location = request.form.get('to-location')
+        print(from_location, to_location)
+        if from_location and to_location:
+            session['init_from_location'] = from_location
+            session['init_to_location'] = to_location
+            return redirect('/home')
+    return render_template('index.html', MAP_API_KEY=MAP_API_KEY)
 
 @views_blueprint.route('/home', methods=["GET"])
 @login_required
@@ -32,6 +41,13 @@ def home():
             return redirect(f'/ride/{latest_ride["_id"]}')
         
         # else return customer home page
+        init_from_location = session.get('init_from_location')
+        init_to_location = session.get('init_to_location')
+
+        if init_from_location and init_to_location:
+            session.pop('init_from_location')
+            session.pop('init_to_location')
+            return render_template('homecustomer.html',user=current_user, cars=cars, step=2, init_from_location=init_from_location, init_to_location=init_to_location, MAP_API_KEY=os.getenv('MAP_API_KEY'))
         return render_template('homecustomer.html',user=current_user, cars=cars, step=1,  MAP_API_KEY=os.getenv('MAP_API_KEY'))
     
     # Driver User is redirected to driver home page

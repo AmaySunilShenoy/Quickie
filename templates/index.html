@@ -5,6 +5,123 @@
 <!-- <meta http-equiv="refresh" content="7"> -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
 <script src="https://kit.fontawesome.com/4f541dc9c0.js" crossorigin="anonymous"></script>
+<script>
+    "use strict";
+
+    const CONFIGURATION = {
+        "ctaTitle": "Checkout",
+        "mapOptions": { "center": { "lat": 37.4221, "lng": -122.0841 }, "fullscreenControl": true, "mapTypeControl": false, "streetViewControl": true, "zoom": 11, "zoomControl": true, "maxZoom": 22, "mapId": "" },
+        "mapsApiKey": "{{MAP_API_KEY}}",
+        "capabilities": { "addressAutocompleteControl": true, "mapDisplayControl": false, "ctaControl": true }
+    };
+
+    const SHORT_NAME_ADDRESS_COMPONENT_TYPES =
+        new Set(['street_number', 'administrative_area_level_1', 'postal_code']);
+
+    const ADDRESS_COMPONENT_TYPES_IN_FORM = [
+        'from',
+        'to'
+    ];
+
+    function getFormInputElement(componentType) {
+        return document.getElementById(`${componentType}-input`);
+    }
+
+    function fillInAddress(place, componentType) {
+        function getComponentName(componentType) {
+            for (const component of place.address_components || []) {
+                if (component.types[0] === componentType) {
+                    return SHORT_NAME_ADDRESS_COMPONENT_TYPES.has(componentType) ?
+                        component.short_name :
+                        component.long_name;
+                }
+            }
+            return '';
+        }
+
+        function getComponentText(componentType) {
+            if (componentType === 'from' || componentType === 'to') {
+                const streetNumber = getComponentName('street_number');
+                const route = getComponentName('route');
+                const locality = getComponentName('locality');
+                const administrativeArea = getComponentName('administrative_area_level_1');
+                const postalCode = getComponentName('postal_code');
+                const country = getComponentName('country');
+
+                const addressComponents = [streetNumber, route, locality, administrativeArea, postalCode, country];
+                return addressComponents.filter(Boolean).join(', ');
+            } else {
+                return getComponentName(componentType);
+            }
+        }
+        getFormInputElement(componentType).value = getComponentText(componentType);
+    }
+
+    async function fromAutocomplete() {
+        const { Autocomplete } = google.maps.places;
+
+        const autocomplete = new Autocomplete(getFormInputElement('from'), {
+            fields: ['address_components', 'geometry', 'name'],
+            types: ['address'],
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert(`No details available for input: '${place.name}'`);
+                return;
+            }
+            fillInAddress(place, 'from');
+        });
+    }
+
+    async function toAutocomplete() {
+        const { Autocomplete } = google.maps.places;
+
+        const autocomplete = new Autocomplete(getFormInputElement('to'), {
+            fields: ['address_components', 'geometry', 'name'],
+            types: ['address'],
+        });
+
+        autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                // User entered the name of a Place that was not suggested and
+                // pressed the Enter key, or the Place Details request failed.
+                window.alert(`No details available for input: '${place.name}'`);
+                return;
+            }
+            fillInAddress(place, 'to');
+        });
+    }
+
+    async function initMap() {
+        await fromAutocomplete();
+        await toAutocomplete();
+    }
+</script>
+<script>
+
+    function getGeoLocation(address) {
+        const geocoder = new google.maps.Geocoder();
+
+        return new Promise((resolve, reject) => {
+            geocoder.geocode({ 'address': address }, (results, status) => {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    const latitude = results[0].geometry.location.lat();
+                    const longitude = results[0].geometry.location.lng();
+                    console.log(latitude, longitude);
+                    resolve([latitude, longitude]);
+                } else {
+                    reject(new Error(`Geocode was not successful for the following reason: ${status}`));
+                }
+            });
+        });
+    }
+
+</script>
 {% endblock %}
 
 {% block title %}Quickie | Welcome{% endblock %}
@@ -27,25 +144,59 @@
                 <p class="main-text">{{ _('Your Fast Lane') }} <br> {{ _('to Any Destination') }} </p><br>
                 <p class="sub-text">{{ _('Get a Ride Quick, Reach your Destination Quicker') }}</p>
             </div>
+            <form action="/" method="POST">
             <div class="from-to">
                 <div class="from">
                     <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" data-baseweb="icon"><title>From</title><path fill-rule="evenodd" clip-rule="evenodd" d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm5-2a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z" fill="currentColor"></path></svg>
-                    <input type="text" name="from-location" placeholder="Enter location" />
-                    <i class="fa-solid fa-location-arrow fa-xl right-icon" title="Current Location"></i>
+                    <input type="text" name="from-location" placeholder="Enter location" id="from-input"/>
+                    <i class="fa-solid fa-location-arrow fa-xl right-icon" onclick="getUserCurrentLocation()" title="Current Location"></i>
                 </div>
                 <div class="connector"></div>
                 <div class="to">
                     <svg class="left-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" data-baseweb="icon"><title>To</title><path fill-rule="evenodd" clip-rule="evenodd" d="M14 10h-4v4h4v-4ZM7 7v10h10V7H7Z" fill="currentColor"></path></svg>
-                    <input type="text" name="to-location" placeholder="Enter destination"/>
+                    <input type="text" name="to-location" placeholder="Enter destination" id="to-input"/>
                 </div>
                 <div class="check-prices">
-                    <input type="submit" name="submit" value="Check Rides" />
+                    <input type="submit" name="submit" value="Check Rides" onclick="" />
                 </div>
             </div>
+        </form>
         </div>
         </div>
         <div class="welcomeImage">
             <img src="../static/images/welcomeimage.png"/>
         </div>
     </section>
+{% endblock %}
+
+{% block js %}
+<script>
+function getUserCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+
+    function showPosition(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const latlng = new google.maps.LatLng(lat, lng);
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                    const address = results[0].formatted_address;
+                    document.querySelector('#from-input').value = address;
+                }
+            }
+        });
+    }
+
+}
+
+</script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{MAP_API_KEY}}&libraries=places,marker&callback=initMap&solution_channel=GMP_QB_addressselection_v2_cAC"
+    async defer></script>
 {% endblock %}

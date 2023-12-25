@@ -37,11 +37,9 @@ def information(section):
     elif section == 'performance':
         if cache.get(f'routes'):
             routes = cache.get('routes')
-            print('routes from cache')
         else:
             routes = route_list()
             cache.set('routes',routes)
-            print('routes from db')
 
         performance_content = get_performance_content()
         print(performance_content)

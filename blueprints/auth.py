@@ -144,15 +144,12 @@ def logout():
 @auth_blueprint.route('/signup', methods=['POST','GET'])
 def signup():
     if request.method == 'POST':
-        print('step is', request.form['step'])
         if request.form['step'] == '1':
             session['signup_firstname'] = request.form['first_name']
             session['signup_lastname'] = request.form['last_name']
-            print(session.get('signup_firstname'), session.get('signup_lastname'))
             return render_template("signup.html", step=2)
         elif request.form['step'] == '2':
             session['signup_password'] = request.form['password']
-            print(session.get('signup_password'))
             return render_template("signup.html", step=3)
         elif request.form['step'] == 'skip':
             return render_template("signup.html", step='skip')
